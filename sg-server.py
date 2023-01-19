@@ -1,7 +1,6 @@
 from flask import Flask
+from app.register import register_bp
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello():
-    return '<h1>hello</h1>'
+app.register_blueprint(register_bp)
