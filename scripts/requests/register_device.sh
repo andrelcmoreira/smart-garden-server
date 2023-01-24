@@ -2,7 +2,7 @@
 
 URL="127.0.0.1"
 PORT=5000
-BODY='{ "user": "andre", "token": "foo", "device-id": "id", "serial-number": "number", "description": "foo desc", "group": "some group" }'
+BODY='{ "user": "foo-user", "token": "foo-token", "device-id": "foo-id", "serial-number": "foo-number", "description": "foo-desc", "group": "foo-group" }'
 
 curl -X POST $URL:$PORT/register/ \
   -H 'Content-Type: application/json' \
