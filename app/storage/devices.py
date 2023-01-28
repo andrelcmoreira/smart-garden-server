@@ -22,7 +22,7 @@ class Devices(Db):
                 f.seek(0)
                 f.truncate(0)
 
-            content.append(str(entry)) # FIXME: dict
+            content.append(entry.__dict__)
             dump(content, f)
 
     def rm(self, entry):
