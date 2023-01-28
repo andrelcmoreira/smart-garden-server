@@ -18,5 +18,9 @@ class Db(ABC):
         pass
 
     @abstractmethod
+    def get_all(self):
+        pass
+
+    @abstractmethod
     def update(self, entry):
         pass

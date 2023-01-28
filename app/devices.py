@@ -9,6 +9,7 @@ devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 def register_device():
     # TODO: check user credentials
     # TODO: check if device already exists
+    # TODO: check parameters
     dev = Device(
         dev_id=request.json['device-id'],
         serial=request.json['serial-number'],
@@ -21,8 +22,18 @@ def register_device():
 
     return jsonify({ 'message': 'device registered with success!' }), 201
 
+@devices_bp.route('/', methods=['GET'])
+def get_devices():
+    # TODO: check user credentials
+    db = Devices()
+    devices = db.get_all()
+
+    return jsonify(devices), 200
+
 @devices_bp.route('/<string:dev_id>', methods=['GET'])
 def get_device(dev_id):
+    # TODO: check user credentials
+    # TODO: check parameters
     db = Devices()
     device = db.get(dev_id)
 
@@ -34,3 +45,4 @@ def get_device(dev_id):
                 'message': "the device isn't registered on database!"
             }
         ), 404
+

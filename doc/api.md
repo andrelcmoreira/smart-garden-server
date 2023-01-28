@@ -33,7 +33,42 @@ available operations and expected results).
 
 ```json
 {
-    "message": "the device 'dev_id' isn't registered on database!"
+    "message": "the device isn't registered on database!"
+}
+```
+
+#### 2.1 Devices
+
+**Get all devices**
+
+`GET /devices`
+
+**Expected response**
+
+- **200** on success
+
+```json
+[
+    {
+        "desc": "foo-desc",
+        "dev_id": "foo-id",
+        "group": "foo-group",
+        "serial": "foo-number"
+    },
+    {
+        "desc": "bar-desc",
+        "dev_id": "bar-id",
+        "group": "bar-group",
+        "serial": "bar-number"
+    }
+]
+```
+
+- **404** on error (when there's no devices registered on database):
+
+```json
+{
+    "message": "there's no devices registered on database!"
 }
 ```
 

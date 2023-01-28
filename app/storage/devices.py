@@ -40,6 +40,12 @@ class Devices(Db):
 
             return {}
 
+    def get_all(self):
+        with open(self.db_file, 'r') as f:
+            content = load(f)
+
+            return content
+
     def update(self, entry):
         pass
 
