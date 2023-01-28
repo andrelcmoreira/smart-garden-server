@@ -28,6 +28,18 @@ class Devices(Db):
     def rm(self, entry):
         pass
 
+    def get(self, id):
+        with open(self.db_file, 'r') as f:
+            content = load(f)
+
+            print(type(content))
+            print(content)
+            for entry in content:
+                if entry['dev_id'] == id:
+                    return entry
+
+            return {}
+
     def update(self, entry):
         pass
 

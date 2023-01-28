@@ -1,6 +1,6 @@
 from flask import Flask
-from app.register import register_bp
+from app.devices import devices_bp
 
 app = Flask(__name__)
 
-app.register_blueprint(register_bp)
+app.register_blueprint(devices_bp)
