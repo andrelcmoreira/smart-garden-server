@@ -10,7 +10,7 @@ available operations and expected results).
 
 **Get a specific device**
 
-GET /devices/<string:id>
+`GET /devices/<string:id>`
 
 **Arguments**
 
@@ -22,10 +22,10 @@ GET /devices/<string:id>
 
 ```json
 {
-  "desc": "foo-desc",
-  "dev_id": "foo-id",
-  "group": "foo-group",
-  "serial": "foo-number"
+    "desc": "foo-desc",
+    "dev_id": "foo-id",
+    "group": "foo-group",
+    "serial": "foo-number"
 }
 ```
 
