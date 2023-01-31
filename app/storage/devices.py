@@ -10,8 +10,7 @@ class Devices(Db):
 
         if not exists(self.db_file):
             with open(self.db_file, 'w') as f:
-                pass
-
+                dump([], f)
 
     def add(self, entry):
         with open(self.db_file, 'r+') as f:
