@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 
 from .storage.devices import Devices
 from .storage.models.device import Device
@@ -11,11 +11,14 @@ def register_device():
     # TODO: check if device already exists
     # TODO: check parameters
     dev = Device(
-        dev_id=request.json['device-id'],
+        id=request.json['device-id'],
         serial=request.json['serial-number'],
         group=request.json['group'],
         desc=request.json['description']
     )
+
+    if not dev.id or not dev.serial or not dev.group:
+        abort(400, 'bad request')
 
     db = Devices()
     db.add(dev)
@@ -34,15 +37,14 @@ def get_devices():
 def get_device(dev_id):
     # TODO: check user credentials
     # TODO: check parameters
+
+    if not dev_id:
+        abort(400, 'bad request')
+
     db = Devices()
     device = db.get(dev_id)
 
     if device:
         return jsonify(device), 200
     else:
-        return jsonify(
-            {
-                'message': "the device isn't registered on database!"
-            }
-        ), 404
-
+        abort(404, "the device isn't registered on database!")

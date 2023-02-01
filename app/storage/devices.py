@@ -31,10 +31,8 @@ class Devices(Db):
         with open(self.db_file, 'r') as f:
             content = load(f)
 
-            print(type(content))
-            print(content)
             for entry in content:
-                if entry['dev_id'] == id:
+                if entry['id'] == id:
                     return entry
 
             return {}
