@@ -24,8 +24,16 @@ class Devices(Db):
             content.append(entry.__dict__)
             dump(content, f)
 
-    def rm(self, entry):
-        pass
+    def rm(self, id):
+        with open(self.db_file, 'r+') as f:
+            content = load(f)
+
+            new_content = [it for it in content if not it['id'] == id]
+
+            f.seek(0)
+            f.truncate(0)
+
+            dump(new_content, f)
 
     def get(self, id):
         with open(self.db_file, 'r') as f:

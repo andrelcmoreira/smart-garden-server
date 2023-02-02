@@ -8,13 +8,17 @@ available operations and expected results).
 
 ### 2. Endpoints
 
+#### 2.1 Devices
+
 **Get a specific device**
 
 `GET /devices/<string:id>`
 
 **Arguments**
 
-- **device-id**: Identification of device
+|   parameter   | mandatory |           description              |
+|---------------|-----------|------------------------------------|
+|   device-id   |    yes    | The ID of device                   |
 
 **Expected response**
 
@@ -36,8 +40,6 @@ available operations and expected results).
     "message": "the device isn't registered on database!"
 }
 ```
-
-#### 2.1 Devices
 
 **Get all devices**
 
@@ -80,8 +82,6 @@ available operations and expected results).
 
 |   parameter   | mandatory |           description              |
 |---------------|-----------|------------------------------------|
-|     user      |    yes    | The user name registered on server |
-|     token     |    yes    | The token of the user              |
 |   device-id   |    yes    | The ID of device                   |
 | serial-number |    yes    | The serial number of device        |
 |  description  |    no     | The description of device e        |
@@ -94,5 +94,31 @@ available operations and expected results).
 ```json
 {
     "message": "device registered with success!"
+}
+```
+
+**Unregister a device**
+
+`DELETE /devices/<string:id>`
+
+**Arguments**
+
+|   parameter   | mandatory |           description              |
+|---------------|-----------|------------------------------------|
+|   device-id   |    yes    | The ID of device                   |
+
+**Expected response**
+
+- **200** on success
+```json
+{
+    "message": "device unregistered with success!"
+}
+```
+
+- **404** on error
+```json
+{
+    "message": "the device isn\'t registered on database!"
 }
 ```
