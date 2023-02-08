@@ -58,9 +58,25 @@ def del_device(dev_id):
         abort(400, 'bad request!')
 
     db = Devices()
-    if db.get(dev_id):
-        db.rm(dev_id)
+    if not db.get(dev_id):
+        abort(404, "the device isn't registered on database!")
 
-        return jsonify({ 'message': 'device unregistered from database!' }), 200
+    db.rm(dev_id)
 
-    abort(404, "the device isn't registered on database!")
+    return jsonify({ 'message': 'device unregistered from database!' }), 200
+
+@devices_bp.route('/<string:dev_id>', methods=['PUT'])
+def update_device(dev_id):
+    # TODO: check user credentials
+    # TODO: check parameters
+
+    if not dev_id:
+        abort(400, 'bad request!')
+
+    db = Devices()
+    if not db.get(dev_id):
+        abort(404, "the device isn't registered on database!")
+
+    db.update(dev_id, request.json['param'], request.json['value'])
+
+    return jsonify({ 'message': 'device updated in database!' }), 200

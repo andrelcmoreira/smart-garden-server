@@ -51,6 +51,15 @@ class Devices(Db):
 
             return content
 
-    def update(self, entry):
-        pass
+    def update(self, id, key, value):
+        with open(self.db_file, 'r+') as f:
+            content = load(f)
 
+            for it in content:
+                if it['id'] == id:
+                    it[key] = value
+
+            f.seek(0)
+            f.truncate(0)
+
+            dump(content, f)

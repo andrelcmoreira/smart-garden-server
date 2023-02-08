@@ -22,5 +22,5 @@ class Db(ABC):
         pass
 
     @abstractmethod
-    def update(self, entry):
+    def update(self, id, data):
         pass

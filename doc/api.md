@@ -122,3 +122,33 @@ available operations and expected results).
     "message": "the device isn\'t registered on database!"
 }
 ```
+
+**Update a device**
+
+`PUT /devices/<string:id>`
+
+**Arguments**
+
+|  parameter  | mandatory |                   description                   |
+|-------------|-----------|-------------------------------------------------|
+|  device-id  |    yes    | The ID of device                                |
+|    param    |    yes    | Parameter to be updated                         |
+|    value    |    yes    | New value of the parameter to be updated        |
+
+**Expected response**
+
+- **200** on success
+
+```json
+{
+    "message": "device updated with success!"
+}
+```
+
+- **404** on error
+
+```json
+{
+    "message": "the device isn't registered on database!"
+}
+```
