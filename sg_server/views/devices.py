@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 
-from .storage.devices import Devices
-from .storage.models.device import Device
+from sg_server.storage.devices import Devices
+from sg_server.storage.models.device import Device
 
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 

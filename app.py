@@ -1,7 +1,7 @@
 from flask import Flask
 
-from app.devices import devices_bp
-from app.error_handlers import *
+from sg_server.views.devices import devices_bp
+from sg_server.error.handlers import *
 
 def create_app():
     app = Flask(__name__)
