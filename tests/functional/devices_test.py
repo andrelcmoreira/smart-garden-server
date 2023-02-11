@@ -101,9 +101,7 @@ class DeviceEndpointTest(TestCase):
 
         with app.test_client() as cli:
             DEV_ID = 'fake_id'
-            EXPECTED_MSG = {
-                'message': 'device unregistered from database!'
-            }
+            EXPECTED_MSG = { 'message': 'device unregistered from database!' }
 
             get_mock.return_value = {
                 "desc": "fake-desc",
@@ -152,9 +150,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "fake-desc",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'device registered with success!'
-            }
+            EXPECTED_MSG = { 'message': 'device registered with success!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -173,9 +169,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "fake-desc",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -195,9 +189,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "fake-desc",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -216,9 +208,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "fake-desc",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -238,9 +228,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "fake-desc",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -259,9 +247,7 @@ class DeviceEndpointTest(TestCase):
                 "serial-number": "fake-serial",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'device registered with success!'
-            }
+            EXPECTED_MSG = { 'message': 'device registered with success!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -281,9 +267,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "",
                 "group": "fake-group"
             }
-            EXPECTED_MSG = {
-                'message': 'device registered with success!'
-            }
+            EXPECTED_MSG = { 'message': 'device registered with success!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -302,9 +286,7 @@ class DeviceEndpointTest(TestCase):
                 "serial-number": "fake-serial",
                 "description": "fake-desc",
             }
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -324,9 +306,7 @@ class DeviceEndpointTest(TestCase):
                 "description": "fake-desc",
                 "group": ""
             }
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json=BODY)
 
@@ -340,9 +320,7 @@ class DeviceEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            EXPECTED_MSG = {
-                'message': 'bad request!'
-            }
+            EXPECTED_MSG = { 'message': 'bad request!' }
 
             ret = cli.post('/devices/', json={})
 
@@ -351,23 +329,55 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    #@patch('app.storage.devices.Devices.get')
-    #def test_get_device_with_no_device_id(self, get_mock):
-    #    app = create_app()
+    @patch('app.storage.devices.Devices.get')
+    @patch('app.storage.devices.Devices.update')
+    def test_update_not_existent_device(self, update_mock, get_mock):
+        app = create_app()
 
-    #    get_mock.return_value = {}
+        with app.test_client() as cli:
+            DEV_ID = 'fake_id'
+            EXPECTED_MSG = {
+                "message": "the device isn't registered on database!"
+            }
 
-    #    with app.test_client() as cli:
-    #        EXPECTED_ERROR = {
-    #            "message": "bad request!"
-    #        }
+            get_mock.return_value = {}
 
-    #        ret = cli.get('/devices/')
+            ret = cli.put('/devices/' + DEV_ID)
 
-    #        self.assertEqual(ret.json, EXPECTED_ERROR)
-    #        self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 404)
 
-    #        get_mock.assert_called_once()
+            get_mock.assert_called_once_with(DEV_ID)
+            update_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.get')
+    @patch('app.storage.devices.Devices.update')
+    def test_update_existent_device(self, update_mock, get_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            DEV_ID = 'fake_id'
+            DATA = { 'param': 'foo-param', 'value': 'foo-value' }
+            EXPECTED_MSG = { "message": "device updated in database!" }
+
+            get_mock.return_value = {
+                "device-id": "fake-id",
+                "serial-number": "",
+                "description": "fake-desc",
+                "group": "fake-group"
+            }
+
+            ret = cli.put('/devices/' + DEV_ID, json=DATA)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 200)
+
+            get_mock.assert_called_once_with(DEV_ID)
+            update_mock.assert_called_once_with(
+                DEV_ID,
+                DATA['param'],
+                DATA['value']
+            )
 
 if __name__ == "__main__":
     main()
