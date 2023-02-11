@@ -11,10 +11,10 @@ def register_device():
     # TODO: check if device already exists
     # TODO: check parameters
     dev = Device(
-        id=request.json['device-id'],
-        serial=request.json['serial-number'],
-        group=request.json['group'],
-        desc=request.json['description']
+        id=request.json.get('device-id'),
+        serial=request.json.get('serial-number'),
+        group=request.json.get('group'),
+        desc=request.json.get('description')
     )
 
     if not dev.id or not dev.serial or not dev.group:
@@ -77,6 +77,6 @@ def update_device(dev_id):
     if not db.get(dev_id):
         abort(404, "the device isn't registered on database!")
 
-    db.update(dev_id, request.json['param'], request.json['value'])
+    db.update(dev_id, request.json.get('param'), request.json.get('value'))
 
     return jsonify({ 'message': 'device updated in database!' }), 200

@@ -77,7 +77,7 @@ class DeviceEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            DEV_ID = 'foo_id'
+            DEV_ID = 'fake_id'
             DEVICE_DATA = {
                 "desc": "fake-desc",
                 "group": "fake-group",
@@ -100,18 +100,17 @@ class DeviceEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            DEV_ID = 'foo_id'
-            DEVICE_DATA = {
+            DEV_ID = 'fake_id'
+            EXPECTED_MSG = {
+                'message': 'device unregistered from database!'
+            }
+
+            get_mock.return_value = {
                 "desc": "fake-desc",
                 "group": "fake-group",
                 "id": "fake-id",
                 "serial": "fake-serial"
             }
-            EXPECTED_MSG = {
-                'message': 'device unregistered from database!'
-            }
-
-            get_mock.return_value = DEVICE_DATA
 
             ret = cli.delete('/devices/' + DEV_ID)
 
@@ -127,13 +126,12 @@ class DeviceEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            DEV_ID = 'foo_id'
+            DEV_ID = 'fake_id'
             EXPECTED_MSG = {
                 "message": "the device isn't registered on database!"
             }
 
-            rm_mock.return_value = {}
-            get_mock.return_value = None
+            get_mock.return_value = {}
 
             ret = cli.delete('/devices/' + DEV_ID)
 
@@ -142,6 +140,216 @@ class DeviceEndpointTest(TestCase):
 
             get_mock.assert_called_once_with(DEV_ID)
             rm_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "serial-number": "fake-serial",
+                "description": "fake-desc",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'device registered with success!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 201)
+
+            add_mock.assert_called_once()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_id(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "serial-number": "fake-serial",
+                "description": "fake-desc",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_blank_id(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "",
+                "serial-number": "fake-serial",
+                "description": "fake-desc",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_serial(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "description": "fake-desc",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_blank_serial(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "serial-number": "",
+                "description": "fake-desc",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_desc(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "serial-number": "fake-serial",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'device registered with success!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 201)
+
+            add_mock.assert_called_once()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_blank_desc(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "serial-number": "fake-serial",
+                "description": "",
+                "group": "fake-group"
+            }
+            EXPECTED_MSG = {
+                'message': 'device registered with success!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 201)
+
+            add_mock.assert_called_once()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_group(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "serial-number": "fake-serial",
+                "description": "fake-desc",
+            }
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_blank_group(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            BODY = {
+                "device-id": "fake-id",
+                "serial-number": "fake-serial",
+                "description": "fake-desc",
+                "group": ""
+            }
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json=BODY)
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
+
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_no_parameters(self, add_mock):
+        app = create_app()
+
+        with app.test_client() as cli:
+            EXPECTED_MSG = {
+                'message': 'bad request!'
+            }
+
+            ret = cli.post('/devices/', json={})
+
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
+
+            add_mock.assert_not_called()
 
     #@patch('app.storage.devices.Devices.get')
     #def test_get_device_with_no_device_id(self, get_mock):
