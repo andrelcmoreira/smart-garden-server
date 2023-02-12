@@ -2,9 +2,6 @@ from abc import ABC, abstractmethod
 
 class Db(ABC):
 
-    def __init__(self, f):
-        self.db_file = f
-
     @abstractmethod
     def add(self, entry):
         pass
@@ -22,5 +19,5 @@ class Db(ABC):
         pass
 
     @abstractmethod
-    def update(self, id, data):
+    def update(self, id, param, value):
         pass
