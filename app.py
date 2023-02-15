@@ -1,6 +1,6 @@
 from flask import Flask
 
-from sg_server.views.devices import devices_bp
+from sg_server.blueprints.devices import devices_bp
 from sg_server.error.handlers import *
 
 def create_app():
@@ -15,3 +15,5 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
+
+    app.run(debug=True)

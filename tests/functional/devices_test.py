@@ -1,13 +1,13 @@
 from unittest import main, TestCase
 from unittest.mock import patch
 
-from sg_server import create_app
+from app import create_app
 
 class DeviceEndpointTest(TestCase):
 
     # TODO: remove mocks
 
-    @patch('app.storage.devices.Devices.get_all')
+    @patch('sg_server.storage.devices.Devices.get_all')
     def test_get_devices_with_empty_db(self, get_all_mock):
         app = create_app()
 
@@ -21,7 +21,7 @@ class DeviceEndpointTest(TestCase):
 
             get_all_mock.assert_called_once()
 
-    @patch('app.storage.devices.Devices.get_all')
+    @patch('sg_server.storage.devices.Devices.get_all')
     def test_get_devices_with_not_empty_db(self, get_all_mock):
         app = create_app()
 
@@ -53,7 +53,7 @@ class DeviceEndpointTest(TestCase):
 
             get_all_mock.assert_called_once()
 
-    @patch('app.storage.devices.Devices.get')
+    @patch('sg_server.storage.devices.Devices.get')
     def test_get_device_with_not_existent_device(self, get_mock):
         app = create_app()
 
@@ -72,7 +72,7 @@ class DeviceEndpointTest(TestCase):
 
             get_mock.assert_called_once_with(DEV_ID)
 
-    @patch('app.storage.devices.Devices.get')
+    @patch('sg_server.storage.devices.Devices.get')
     def test_get_device_with_existent_device(self, get_mock):
         app = create_app()
 
@@ -94,8 +94,8 @@ class DeviceEndpointTest(TestCase):
 
             get_mock.assert_called_once_with(DEV_ID)
 
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.rm')
+    @patch('sg_server.storage.devices.Devices.get')
+    @patch('sg_server.storage.devices.Devices.rm')
     def test_del_device_with_existent_device(self, rm_mock, get_mock):
         app = create_app()
 
@@ -118,8 +118,8 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(DEV_ID)
             rm_mock.assert_called_once()
 
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.rm')
+    @patch('sg_server.storage.devices.Devices.get')
+    @patch('sg_server.storage.devices.Devices.rm')
     def test_del_device_with_not_existent_device(self, rm_mock, get_mock):
         app = create_app()
 
@@ -139,7 +139,7 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(DEV_ID)
             rm_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device(self, add_mock):
         app = create_app()
 
@@ -159,7 +159,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_called_once()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_missing_id(self, add_mock):
         app = create_app()
 
@@ -178,7 +178,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_blank_id(self, add_mock):
         app = create_app()
 
@@ -198,7 +198,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_missing_serial(self, add_mock):
         app = create_app()
 
@@ -217,7 +217,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_blank_serial(self, add_mock):
         app = create_app()
 
@@ -237,7 +237,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_missing_desc(self, add_mock):
         app = create_app()
 
@@ -256,7 +256,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_called_once()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_blank_desc(self, add_mock):
         app = create_app()
 
@@ -276,7 +276,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_called_once()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_missing_group(self, add_mock):
         app = create_app()
 
@@ -295,7 +295,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_blank_group(self, add_mock):
         app = create_app()
 
@@ -315,7 +315,7 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('sg_server.storage.devices.Devices.add')
     def test_register_device_with_no_parameters(self, add_mock):
         app = create_app()
 
@@ -329,8 +329,8 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.update')
+    @patch('sg_server.storage.devices.Devices.get')
+    @patch('sg_server.storage.devices.Devices.update')
     def test_update_not_existent_device(self, update_mock, get_mock):
         app = create_app()
 
@@ -350,8 +350,8 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(DEV_ID)
             update_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.update')
+    @patch('sg_server.storage.devices.Devices.get')
+    @patch('sg_server.storage.devices.Devices.update')
     def test_update_existent_device(self, update_mock, get_mock):
         app = create_app()
 
