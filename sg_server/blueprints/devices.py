@@ -24,7 +24,7 @@ def register_device():
     db = Devices()
     db.add(dev)
 
-    return jsonify({ 'message': 'device registered with success!' }), 201
+    return jsonify({ 'msg': 'device registered with success!' }), 201
 
 @devices_bp.route('/', methods=['GET'])
 @jwt_required()
@@ -64,7 +64,7 @@ def del_device(dev_id):
 
     db.rm(dev_id)
 
-    return jsonify({ 'message': 'device unregistered from database!' }), 200
+    return jsonify({ 'msg': 'device unregistered from database!' }), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['PUT'])
 @jwt_required()
@@ -80,4 +80,4 @@ def update_device(dev_id):
 
     db.update(dev_id, request.json.get('param'), request.json.get('value'))
 
-    return jsonify({ 'message': 'device updated in database!' }), 200
+    return jsonify({ 'msg': 'device updated in database!' }), 200
