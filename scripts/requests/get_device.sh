@@ -3,5 +3,6 @@
 URL="127.0.0.1"
 PORT=5000
 ID="$1"
+TOKEN="$2"
 
-curl "$URL:$PORT/devices/$ID"
+curl -H "Authorization: Bearer $TOKEN" "$URL:$PORT/devices/$ID"

@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
+from flask_jwt_extended import jwt_required
 
 from sg_server.storage.devices import Devices
 from sg_server.storage.models.device import Device
@@ -6,8 +7,8 @@ from sg_server.storage.models.device import Device
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 
 @devices_bp.route('/', methods=['POST'])
+@jwt_required()
 def register_device():
-    # TODO: check user credentials
     # TODO: check if device already exists
     # TODO: check parameters
     dev = Device(
@@ -26,16 +27,16 @@ def register_device():
     return jsonify({ 'message': 'device registered with success!' }), 201
 
 @devices_bp.route('/', methods=['GET'])
+@jwt_required()
 def get_devices():
-    # TODO: check user credentials
     db = Devices()
     devices = db.get_all()
 
     return jsonify(devices), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['GET'])
+@jwt_required()
 def get_device(dev_id):
-    # TODO: check user credentials
     # TODO: check parameters
 
     if not dev_id:
@@ -50,8 +51,8 @@ def get_device(dev_id):
         abort(404, "the device isn't registered on database!")
 
 @devices_bp.route('/<string:dev_id>', methods=['DELETE'])
+@jwt_required()
 def del_device(dev_id):
-    # TODO: check user credentials
     # TODO: check parameters
 
     if not dev_id:
@@ -66,8 +67,8 @@ def del_device(dev_id):
     return jsonify({ 'message': 'device unregistered from database!' }), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['PUT'])
+@jwt_required()
 def update_device(dev_id):
-    # TODO: check user credentials
     # TODO: check parameters
 
     if not dev_id:

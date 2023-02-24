@@ -8,7 +8,38 @@ available operations and expected results).
 
 ### 2. Endpoints
 
-#### 2.1 Devices
+#### 2.1 Login
+
+**Log an user**
+
+`POST /login`
+
+**Arguments**
+
+|   parameter   | mandatory |         description         |
+|---------------|-----------|-----------------------------|
+|      user     |    yes    | User's name                 |
+|    password   |    yes    | User's password             |
+
+**Expected response**
+
+- **200** on success
+
+```json
+{
+    "token": "jwt-token"
+}
+```
+
+- **400** on error (when lacking the user name or password):
+
+```json
+{
+    "message": "invalid user credentials!"
+}
+```
+
+#### 2.2 Devices
 
 **Get a specific device**
 
