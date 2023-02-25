@@ -11,7 +11,7 @@ def login():
     passwd = request.json.get('password')
 
     if (not user) or (not passwd):
-        abort(400, 'invalid user credentials!')
+        abort(400, 'Invalid user credentials')
 
     token = flask_jwt_extended.create_access_token(identity=(user, passwd))
 

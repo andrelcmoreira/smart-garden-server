@@ -35,7 +35,7 @@ available operations and expected results).
 
 ```json
 {
-    "message": "invalid user credentials!"
+    "msg": "Invalid user credentials"
 }
 ```
 
@@ -68,7 +68,7 @@ available operations and expected results).
 
 ```json
 {
-    "message": "the device isn't registered on database!"
+    "msg": "The device isn't registered on database"
 }
 ```
 
@@ -101,7 +101,7 @@ available operations and expected results).
 
 ```json
 {
-    "message": "there's no devices registered on database!"
+    "msg": "There's no devices registered on database"
 }
 ```
 
@@ -124,7 +124,7 @@ available operations and expected results).
 
 ```json
 {
-    "message": "device registered with success!"
+    "msg": "Device registered with success"
 }
 ```
 
@@ -143,14 +143,14 @@ available operations and expected results).
 - **200** on success
 ```json
 {
-    "message": "device unregistered with success!"
+    "msg": "Device unregistered with success"
 }
 ```
 
 - **404** on error
 ```json
 {
-    "message": "the device isn\'t registered on database!"
+    "msg": "The device isn\'t registered on database"
 }
 ```
 
@@ -172,7 +172,7 @@ available operations and expected results).
 
 ```json
 {
-    "message": "device updated with success!"
+    "msg": "Device updated with success"
 }
 ```
 
@@ -180,6 +180,6 @@ available operations and expected results).
 
 ```json
 {
-    "message": "the device isn't registered on database!"
+    "msg": "The device isn't registered on database"
 }
 ```

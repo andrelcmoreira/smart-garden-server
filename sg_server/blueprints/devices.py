@@ -19,12 +19,12 @@ def register_device():
     )
 
     if not dev.id or not dev.serial or not dev.group:
-        abort(400, 'bad request!')
+        abort(400, 'Bad request')
 
     db = Devices()
     db.add(dev)
 
-    return jsonify({ 'msg': 'device registered with success!' }), 201
+    return jsonify({ 'msg': 'Device registered with success' }), 201
 
 @devices_bp.route('/', methods=['GET'])
 @jwt_required()
@@ -40,7 +40,7 @@ def get_device(dev_id):
     # TODO: check parameters
 
     if not dev_id:
-        abort(400, 'bad request!')
+        abort(400, 'Bad request')
 
     db = Devices()
     device = db.get(dev_id)
@@ -56,15 +56,15 @@ def del_device(dev_id):
     # TODO: check parameters
 
     if not dev_id:
-        abort(400, 'bad request!')
+        abort(400, 'Bad request')
 
     db = Devices()
     if not db.get(dev_id):
-        abort(404, "the device isn't registered on database!")
+        abort(404, "The device isn't registered on database")
 
     db.rm(dev_id)
 
-    return jsonify({ 'msg': 'device unregistered from database!' }), 200
+    return jsonify({ 'msg': 'Device unregistered from database' }), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['PUT'])
 @jwt_required()
@@ -72,12 +72,12 @@ def update_device(dev_id):
     # TODO: check parameters
 
     if not dev_id:
-        abort(400, 'bad request!')
+        abort(400, 'Bad request')
 
     db = Devices()
     if not db.get(dev_id):
-        abort(404, "the device isn't registered on database!")
+        abort(404, "The device isn't registered on database")
 
     db.update(dev_id, request.json.get('param'), request.json.get('value'))
 
-    return jsonify({ 'msg': 'device updated in database!' }), 200
+    return jsonify({ 'msg': 'Device updated in database' }), 200
