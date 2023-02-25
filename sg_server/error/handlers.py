@@ -1,7 +1,7 @@
 from flask import jsonify
 
 def bad_request(e):
-    return jsonify({ 'message': e.description }), 400
+    return jsonify({ 'msg': e.description }), 400
 
 def resource_not_found(e):
-    return jsonify({ 'message': e.description }), 404
+    return jsonify({ 'msg': e.description }), 404
