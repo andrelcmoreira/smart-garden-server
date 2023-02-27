@@ -2,9 +2,10 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from os import getenv
 
-from sg_server.blueprints.devices import devices_bp
-from sg_server.blueprints.login import login_bp
-from sg_server.error.handlers import *
+#from app.blueprints.config import config_bp
+from app.blueprints.devices import devices_bp
+from app.blueprints.login import login_bp
+from app.error.handlers import *
 
 def create_app():
     app = Flask(__name__)
@@ -14,6 +15,7 @@ def create_app():
     jwt = JWTManager()
     jwt.init_app(app)
 
+#    app.register_blueprint(config_bp)
     app.register_blueprint(devices_bp)
     app.register_blueprint(login_bp)
 

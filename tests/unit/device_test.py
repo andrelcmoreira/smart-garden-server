@@ -1,6 +1,6 @@
 from unittest import main, TestCase
 
-from sg_server.storage.models.device import Device
+from app.storage.models.device import Device
 
 class DeviceTest(TestCase):
 
