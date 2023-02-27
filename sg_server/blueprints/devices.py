@@ -11,6 +11,7 @@ devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 def register_device():
     # TODO: check if device already exists
     # TODO: check parameters
+    # TODO: decouple the view function to database access layer
     dev = Device(
         id=request.json.get('device-id'),
         serial=request.json.get('serial-number'),
@@ -29,6 +30,7 @@ def register_device():
 @devices_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_devices():
+    # TODO: decouple the view function to database access layer
     db = Devices()
     devices = db.get_all()
 
@@ -38,6 +40,7 @@ def get_devices():
 @jwt_required()
 def get_device(dev_id):
     # TODO: check parameters
+    # TODO: decouple the view function to database access layer
 
     if not dev_id:
         abort(400, 'Bad request')
@@ -54,6 +57,7 @@ def get_device(dev_id):
 @jwt_required()
 def del_device(dev_id):
     # TODO: check parameters
+    # TODO: decouple the view function to database access layer
 
     if not dev_id:
         abort(400, 'Bad request')
@@ -70,6 +74,7 @@ def del_device(dev_id):
 @jwt_required()
 def update_device(dev_id):
     # TODO: check parameters
+    # TODO: decouple the view function to database access layer
 
     if not dev_id:
         abort(400, 'Bad request')
