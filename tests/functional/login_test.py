@@ -1,9 +1,11 @@
 from unittest import main, TestCase
 from unittest.mock import patch
 
-from app import create_app
+from run import create_app
 
 class LoginEndpointTest(TestCase):
+
+    # TODO: remove mocks
 
     @patch('flask_jwt_extended.create_access_token')
     def test_login_with_valid_credentials(self, create_token_mock):
@@ -11,8 +13,8 @@ class LoginEndpointTest(TestCase):
 
         with app.test_client() as cli:
             BODY = {
-                "user": "fake-user",
-                "password": "fake-pass"
+                "user": "fake_user",
+                "password": "fake_pass"
             }
             TOKEN = 'fake-token'
             EXPECTED_MSG = { 'token': TOKEN }
@@ -34,9 +36,9 @@ class LoginEndpointTest(TestCase):
 
         with app.test_client() as cli:
             BODY = {
-                "password": "fake-admin"
+                "password": "fake_admin"
             }
-            EXPECTED_MSG = { 'msg': 'invalid user credentials!' }
+            EXPECTED_MSG = { 'msg': 'Invalid user credentials' }
 
             ret = cli.post('/login/', json=BODY)
 
@@ -51,9 +53,9 @@ class LoginEndpointTest(TestCase):
 
         with app.test_client() as cli:
             BODY = {
-                "user": "fake-admin"
+                "user": "fake_admin"
             }
-            EXPECTED_MSG = { 'msg': 'invalid user credentials!' }
+            EXPECTED_MSG = { 'msg': 'Invalid user credentials' }
 
             ret = cli.post('/login/', json=BODY)
 

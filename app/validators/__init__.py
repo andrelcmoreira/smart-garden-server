@@ -1,7 +1,7 @@
 from re import search
 
 def is_user_valid(user):
-    if len(user) == 0:
+    if not isinstance(user, str) or len(user) == 0:
         return False
 
     ret = search('^\w+$', user)
@@ -9,7 +9,7 @@ def is_user_valid(user):
     return True if ret else False
 
 def is_password_valid(passwd):
-    if len(passwd) == 0:
+    if not isinstance(passwd, str) or len(passwd) == 0:
         return False
 
     ret = search('^[\w@#\$&\*\-!\?;:]+$', passwd)
@@ -39,3 +39,9 @@ def is_id_valid(dev_id):
     ret = search('^[a-zA-Z\d]+$', dev_id)
 
     return True if ret else False
+
+def is_param_valid(param):
+    pass
+
+def is_value_valid(value):
+    pass

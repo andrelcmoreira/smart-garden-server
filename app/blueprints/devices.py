@@ -10,58 +10,114 @@ devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 @devices_bp.route('/', methods=['POST'])
 @jwt_required()
 def register_device():
-    serial = request.json.get('serial-number')
-    model = request.json.get('device-model')
+    # TODO: check if device already exists
+    # TODO: check parameters
+    dev = Device(
+        id=request.json.get('device-id'),
+        serial=request.json.get('serial-number'),
+        group=request.json.get('group'),
+        desc=request.json.get('description')
+    )
 
-    if (not is_serial_valid(serial)) or (not is_model_valid(model)):
-        abort(400, 'Bad request')
+    if not dev.id or not dev.serial or not dev.group:
+        abort(400, 'bad request!')
 
-    # TODO: handle the errors properly
-    if cntrl.register(serial, model) != StatusCode.SUCCESS:
-        abort(500, '')
+    db = Devices()
+    db.add(dev)
 
-    return jsonify({ 'msg': 'Device registered with success' }), 201
+    return jsonify({ 'msg': 'device registered with success!' }), 201
+#   serial = request.json.get('serial-number')
+#   model = request.json.get('device-model')
+
+#   if (not is_serial_valid(serial)) or (not is_model_valid(model)):
+#       abort(400, 'Bad request')
+
+#   # TODO: handle the errors properly
+#   if cntrl.register(serial, model) != StatusCode.SUCCESS:
+#       abort(500, '')
+
+#   return jsonify({ 'msg': 'Device registered with success' }), 201
 
 @devices_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_devices():
-    devices = cntrl.get_all()
+    db = Devices()
+    devices = db.get_all()
 
     return jsonify(devices), 200
+#   devices = cntrl.get_all()
+
+#   return jsonify(devices), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['GET'])
 @jwt_required()
 def get_device(dev_id):
-    if not is_id_valid(dev_id):
-        abort(400, 'Bad request')
+    # TODO: check parameters
 
-    device = cntrl.get(dev_id)
-    if not device:
+    if not dev_id:
+        abort(400, 'bad request!')
+
+    db = Devices()
+    device = db.get(dev_id)
+
+    if device:
+        return jsonify(device), 200
+    else:
         abort(404, "the device isn't registered on database!")
+#   if not is_id_valid(dev_id):
+#       abort(400, 'Bad request')
 
-    return jsonify(device), 200
+#   device = cntrl.get(dev_id)
+#   if not device:
+#       abort(404, "the device isn't registered on database!")
+
+#   return jsonify(device), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['DELETE'])
 @jwt_required()
 def del_device(dev_id):
-    if not is_id_valid(dev_id):
-        abort(400, 'Bad request')
+    # TODO: check parameters
 
-    if cntrl.rm(dev_id) == StatusCode.DEVICE_DO_NOT_EXIST:
-        abort(404, "The device isn't registered on database")
+    if not dev_id:
+        abort(400, 'bad request!')
 
-    return jsonify({ 'msg': 'Device unregistered from database' }), 200
+    db = Devices()
+    if not db.get(dev_id):
+        abort(404, "the device isn't registered on database!")
+
+    db.rm(dev_id)
+
+    return jsonify({ 'msg': 'device unregistered from database!' }), 200
+#   if not is_id_valid(dev_id):
+#       abort(400, 'Bad request')
+
+#   if cntrl.rm(dev_id) == StatusCode.DEVICE_DO_NOT_EXIST:
+#       abort(404, "The device isn't registered on database")
+
+#   return jsonify({ 'msg': 'Device unregistered from database' }), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['PUT'])
 @jwt_required()
 def update_device(dev_id):
-    if not is_id_valid(dev_id):
-        abort(400, 'Bad request')
+    # TODO: check parameters
 
-    param = request.json.get('param')
-    val = request.json.get('value')
+    if not dev_id:
+        abort(400, 'bad request!')
 
-    if cntrl.update(dev_id, param, val) == StatusCode.DEVICE_DO_NOT_EXIST:
-        abort(404, "The device isn't registered on database")
+    db = Devices()
+    if not db.get(dev_id):
+        abort(404, "the device isn't registered on database!")
 
-    return jsonify({ 'msg': 'Device updated in database' }), 200
+    db.update(dev_id, request.json.get('param'), request.json.get('value'))
+
+    return jsonify({ 'msg': 'device updated in database!' }), 200
+#   if not is_id_valid(dev_id):
+#       abort(400, 'Bad request')
+
+#   param = request.json.get('param')
+#   val = request.json.get('value')
+
+#   if cntrl.update(dev_id, param, val) == StatusCode.DEVICE_DO_NOT_EXIST:
+#       abort(404, "The device isn't registered on database")
+
+#   return jsonify({ 'msg': 'Device updated in database' }), 200
