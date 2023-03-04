@@ -5,3 +5,6 @@ def bad_request(e):
 
 def resource_not_found(e):
     return jsonify({ 'msg': e.description }), 404
+
+def internal_error(e):
+    return jsonify({ 'msg': e.description }), 500

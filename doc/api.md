@@ -59,6 +59,7 @@ available operations and expected results).
 {
     "desc": "foo-desc",
     "dev_id": "foo-id",
+    "model": "foo-model",
     "group": "foo-group",
     "serial": "foo-number"
 }
@@ -86,12 +87,14 @@ available operations and expected results).
         "desc": "foo-desc",
         "dev_id": "foo-id",
         "group": "foo-group",
+        "model": "foo-model",
         "serial": "foo-number"
     },
     {
         "desc": "bar-desc",
         "dev_id": "bar-id",
         "group": "bar-group",
+        "model": "bar-model",
         "serial": "bar-number"
     }
 ]
@@ -113,10 +116,9 @@ available operations and expected results).
 
 |   parameter   | mandatory |           description              |
 |---------------|-----------|------------------------------------|
-|   device-id   |    yes    | The ID of device                   |
 | serial-number |    yes    | The serial number of device        |
+|     model     |    yes    | The model of device                |
 |  description  |    no     | The description of device e        |
-|     group     |    yes    | The group of device                |
 
 **Expected response**
 

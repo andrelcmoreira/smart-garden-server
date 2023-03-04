@@ -4,5 +4,6 @@ from dataclasses import dataclass
 class Device:
     id: str
     serial: str
-    group: str
-    desc: str
+    model: str
+    desc: str = ''
+    group: str = ''

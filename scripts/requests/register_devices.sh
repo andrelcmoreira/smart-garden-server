@@ -6,7 +6,7 @@ DEVICES="foo bar baz qux"
 TOKEN="$1"
 
 for dev in $DEVICES; do
-  BODY="{ \"device-id\": \"$dev-id\", \"serial-number\": \"$dev-serial\", \"description\": \"$dev-desc\", \"group\": \"$dev-group\" }"
+  BODY="{ \"model\": \"$dev-model\", \"serial-number\": \"$dev-serial\", \"description\": \"\" }"
 
   curl -X POST "$URL:$PORT/devices/" \
     -H "Content-Type: application/json" \
