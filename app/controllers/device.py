@@ -1,14 +1,14 @@
 from app.storage.devices import Devices
 from app.storage.models.device import Device
 
-from random import sample
+import random
 from string import ascii_lowercase, digits
 
 __DB = Devices()
 
 def register(serial, model, desc):
     # TODO: handle the errors properly
-    dev_id = ''.join(sample(ascii_lowercase + digits, 8)) # TODO: remove this logic from here
+    dev_id = ''.join(random.sample(ascii_lowercase + digits, 8)) # TODO: remove this logic from here
     dev = Device(id=dev_id, serial=serial, model=model, desc=desc)
 
     __DB.add(dev)
