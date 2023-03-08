@@ -1,6 +1,7 @@
+from os import getenv
+
 from flask import Flask
 from flask_jwt_extended import JWTManager
-from os import getenv
 
 from app.blueprints.devices import devices_bp
 from app.blueprints.login import login_bp

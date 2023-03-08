@@ -1,4 +1,5 @@
-from flask import abort, current_app, jsonify, request, Blueprint
+from flask import abort, jsonify, request, Blueprint
+from flask import current_app as app
 
 import flask_jwt_extended
 
@@ -8,7 +9,7 @@ login_bp = Blueprint('login', __name__, url_prefix='/login')
 
 @login_bp.route('/', methods=['POST'])
 def login():
-    current_app.logger.debug('request payload: %s' % request.json)
+    app.logger.debug(f'request payload: {request.json}')
 
     if not validate_request(request.json):
         abort(400, 'Invalid user credentials')
@@ -16,8 +17,8 @@ def login():
     try:
         user = request.json['user']
         passwd = request.json['password']
-    except KeyError as e:
-        current_app.logger.debug('missing %s in request' % e)
+    except KeyError as key:
+        app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
     token = flask_jwt_extended.create_access_token(identity=(user, passwd))

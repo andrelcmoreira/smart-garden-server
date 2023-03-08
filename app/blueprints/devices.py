@@ -1,15 +1,20 @@
-from flask import abort, current_app, jsonify, request, Blueprint
+import random
+from string import ascii_lowercase, digits
+
+from flask import abort, jsonify, request, Blueprint
+from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
-from app.controllers.device import *
+from app.storage.models.device import Device
 from app.validators import validate_request, validate_field
+from . import DEVICES_DB
 
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 
 @devices_bp.route('/', methods=['POST'])
 @jwt_required()
 def register_device():
-    current_app.logger.debug('request payload -> %s' % request.json)
+    app.logger.debug(f'request payload -> {request.json}')
 
     if not validate_request(request.json):
         abort(400, 'Bad request')
@@ -18,13 +23,17 @@ def register_device():
         serial = request.json['serial-number']
         model = request.json['model']
         desc = request.json['description']
-    except KeyError as e:
-        current_app.logger.debug('missing %s in request' % e)
+    except KeyError as key:
+        app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    dev_id = register(serial, model, desc)
+    dev_id = ''.join(random.sample(ascii_lowercase + digits, 8)) # TODO: remove this logic from here?
     if not dev_id:
+        app.logger.debug('empty device id')
         abort(500, 'Failed to register the device into the database')
+
+    dev = Device(id=dev_id, serial=serial, model=model, desc=desc)
+    DEVICES_DB.add(dev)
 
     return jsonify(
         {
@@ -36,19 +45,19 @@ def register_device():
 @devices_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_devices():
-    devices = get_all()
+    devices = DEVICES_DB.get_all()
 
     return jsonify(devices), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['GET'])
 @jwt_required()
 def get_device(dev_id):
-    current_app.logger.debug('device id -> %s' % dev_id)
+    app.logger.debug(f'device id -> {dev_id}')
 
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    device = get(dev_id)
+    device = DEVICES_DB.get(dev_id)
     if not device:
         abort(404, "The device isn't registered on database")
 
@@ -57,20 +66,23 @@ def get_device(dev_id):
 @devices_bp.route('/<string:dev_id>', methods=['DELETE'])
 @jwt_required()
 def del_device(dev_id):
-    current_app.logger.debug('device id -> %s' % dev_id)
+    app.logger.debug(f'device id -> {dev_id}')
 
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    if delete(dev_id):
+    if not DEVICES_DB.get(dev_id):
+        app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
+
+    DEVICES_DB.rm(dev_id)
 
     return jsonify({ 'msg': 'Device unregistered from database' }), 200
 
 @devices_bp.route('/<string:dev_id>', methods=['PUT'])
 @jwt_required()
 def update_device(dev_id):
-    current_app.logger.debug('device id -> %s' % dev_id)
+    app.logger.debug(f'device id -> {dev_id}')
 
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
@@ -78,11 +90,14 @@ def update_device(dev_id):
     try:
         param = request.json['param']
         val = request.json['value']
-    except KeyError as e:
-        current_app.logger.debug('missing %s in request' % e)
+    except KeyError as key:
+        app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    if update(dev_id, param, val):
+    if not DEVICES_DB.get(dev_id):
+        app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
+
+    DEVICES_DB.update(dev_id, param, val)
 
     return jsonify({ 'msg': 'Device updated in database' }), 200
