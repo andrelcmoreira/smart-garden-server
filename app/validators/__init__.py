@@ -34,12 +34,12 @@ __VALIDATORS = [
     {
         'field': 'param',
         'required': True,
-        'pattern': ''
+        'pattern': '^[a-z_\-]+$'
     },
     {
         'field': 'value',
         'required': True,
-        'pattern': ''
+        'pattern': '^[\w@#\$&\*\-!\?;:]+$'
     }
 ]
 
