@@ -38,7 +38,7 @@ class LoginEndpointTest(TestCase):
             BODY = {
                 "password": "fake_admin"
             }
-            EXPECTED_MSG = { 'msg': 'Invalid user credentials' }
+            EXPECTED_MSG = { 'msg': 'Missing required data' }
 
             ret = cli.post('/login/', json=BODY)
 
@@ -47,22 +47,22 @@ class LoginEndpointTest(TestCase):
 
             create_token_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.create_access_token')
-#   def test_login_with_no_password(self, create_token_mock):
-#       app = create_app()
+    @patch('flask_jwt_extended.create_access_token')
+    def test_login_with_no_password(self, create_token_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           BODY = {
-#               "user": "fake_admin"
-#           }
-#           EXPECTED_MSG = { 'msg': 'Invalid user credentials' }
+        with app.test_client() as cli:
+            BODY = {
+                "user": "fake_admin"
+            }
+            EXPECTED_MSG = { 'msg': 'Missing required data' }
 
-#           ret = cli.post('/login/', json=BODY)
+            ret = cli.post('/login/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
 
-#           create_token_mock.assert_not_called()
+            create_token_mock.assert_not_called()
 
 if __name__ == "__main__":
     main()
