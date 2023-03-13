@@ -6,4 +6,3 @@ class Device:
     serial: str
     model: str
     desc: str = ''
-    group: str = ''

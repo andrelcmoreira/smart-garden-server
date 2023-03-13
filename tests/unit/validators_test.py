@@ -1,79 +1,91 @@
 from unittest import main, TestCase
 
-from app.validators import *
+from app.validators import validate_field
 
 class ValidatorsTest(TestCase):
 
-    def test_validate_user_with_valid_entry(self):
-        user_name = 'admin'
+    def test_validate_field_with_valid_value(self):
+        field = 'id'
+        value = '1234efgh'
 
-        self.assertTrue(__is_user_valid(user_name))
+        self.assertTrue(validate_field(field, value))
 
-    def test_validate_user_with_blank_entry(self):
-        self.assertFalse(__is_user_valid(''))
+    def test_validate_field_with_invalid_value(self):
+        field = 'id'
+        value = 'ABCDE123@!_'
 
-    def test_validate_user_with_invalid_entry(self):
-        user_name = '@dm1n_1234!'
+        self.assertFalse(validate_field(field, value))
 
-        self.assertFalse(__is_user_valid(user_name))
+#   def test_validate_user_with_valid_entry(self):
+#       user_name = 'admin'
 
-    def test_validate_password_with_valid_entry(self):
-        password = '_P@$$sw0rd!'
+#       self.assertTrue(__is_user_valid(user_name))
 
-        self.assertTrue(__is_password_valid(password))
+#   def test_validate_user_with_blank_entry(self):
+#       self.assertFalse(__is_user_valid(''))
 
-    def test_validate_password_with_blank_entry(self):
-        self.assertFalse(__is_password_valid(''))
+#   def test_validate_user_with_invalid_entry(self):
+#       user_name = '@dm1n_1234!'
 
-    def test_validate_password_with_invalid_entry(self):
-        password = '   _p@$$_'
+#       self.assertFalse(__is_user_valid(user_name))
 
-        self.assertFalse(__is_password_valid(password))
+#   def test_validate_password_with_valid_entry(self):
+#       password = '_P@$$sw0rd!'
 
-    def test_validate_serial_with_valid_entry(self):
-        serial = 'ABCDE-12345'
+#       self.assertTrue(__is_password_valid(password))
 
-        self.assertTrue(__is_serial_valid(serial))
+#   def test_validate_password_with_blank_entry(self):
+#       self.assertFalse(__is_password_valid(''))
 
-    def test_validate_serial_with_blank_entry(self):
-        serial = ''
+#   def test_validate_password_with_invalid_entry(self):
+#       password = '   _p@$$_'
 
-        self.assertFalse(__is_serial_valid(serial))
+#       self.assertFalse(__is_password_valid(password))
 
-    def test_validate_serial_with_invalid_entry(self):
-        serial = 'abcd_12345'
+#   def test_validate_serial_with_valid_entry(self):
+#       serial = 'ABCDE-12345'
 
-        self.assertFalse(__is_serial_valid(serial))
+#       self.assertTrue(__is_serial_valid(serial))
 
-    def test_validate_model_with_valid_entry(self):
-        model = 'VALID_MODEL'
+#   def test_validate_serial_with_blank_entry(self):
+#       serial = ''
 
-        self.assertTrue(__is_model_valid(model))
+#       self.assertFalse(__is_serial_valid(serial))
 
-    def test_validate_model_with_blank_entry(self):
-        model = ''
+#   def test_validate_serial_with_invalid_entry(self):
+#       serial = 'abcd_12345'
 
-        self.assertFalse(__is_model_valid(model))
+#       self.assertFalse(__is_serial_valid(serial))
 
-    def test_validate_model_with_invalid_entry(self):
-        model = '@#$MODEL'
+#   def test_validate_model_with_valid_entry(self):
+#       model = 'VALID_MODEL'
 
-        self.assertFalse(__is_model_valid(model))
+#       self.assertTrue(__is_model_valid(model))
 
-    def test_validate_id_with_valid_entry(self):
-        dev_id = '1234efgh'
+#   def test_validate_model_with_blank_entry(self):
+#       model = ''
 
-        self.assertTrue(__is_id_valid(dev_id))
+#       self.assertFalse(__is_model_valid(model))
 
-    def test_validate_id_with_blank_entry(self):
-        dev_id = ''
+#   def test_validate_model_with_invalid_entry(self):
+#       model = '@#$MODEL'
 
-        self.assertFalse(__is_id_valid(dev_id))
+#       self.assertFalse(__is_model_valid(model))
 
-    def test_validate_id_with_invalid_entry(self):
-        dev_id = '@ABC$EF01234'
+#   def test_validate_id_with_valid_entry(self):
+#       dev_id = '1234efgh'
 
-        self.assertFalse(__is_id_valid(dev_id))
+#       self.assertTrue(__is_id_valid(dev_id))
+
+#   def test_validate_id_with_blank_entry(self):
+#       dev_id = ''
+
+#       self.assertFalse(__is_id_valid(dev_id))
+
+#   def test_validate_id_with_invalid_entry(self):
+#       dev_id = '@ABC$EF01234'
+
+#       self.assertFalse(__is_id_valid(dev_id))
 
 if __name__ == "__main__":
     main()

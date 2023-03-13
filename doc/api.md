@@ -60,7 +60,6 @@ available operations and expected results).
     "desc": "foo-desc",
     "dev_id": "foo-id",
     "model": "foo-model",
-    "group": "foo-group",
     "serial": "foo-number"
 }
 ```
@@ -86,14 +85,12 @@ available operations and expected results).
     {
         "desc": "foo-desc",
         "dev_id": "foo-id",
-        "group": "foo-group",
         "model": "foo-model",
         "serial": "foo-number"
     },
     {
         "desc": "bar-desc",
         "dev_id": "bar-id",
-        "group": "bar-group",
         "model": "bar-model",
         "serial": "bar-number"
     }
