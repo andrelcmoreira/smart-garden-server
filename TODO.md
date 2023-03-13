@@ -8,3 +8,4 @@
 - docker
 - monitoring
 - CI
+- update documentation

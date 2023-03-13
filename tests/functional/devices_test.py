@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from flask_jwt_extended import create_access_token
 
+from app.storage.models.device import Device
 from run import create_app
 
 class DeviceEndpointTest(TestCase):
@@ -150,139 +151,147 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(DEV_ID)
             rm_mock.assert_not_called()
 
-#   @patch('random.sample')
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device(self, add_mock, jwt_required_mock, sample_mock):
-#       app = create_app()
+    @patch('random.sample')
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device(self, add_mock, jwt_required_mock, sample_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           DEVICE_ID = 'device-id'
-#           BODY = {
-#               "serial-number": "fake-serial",
-#               "model": "fake-model",
-#               "description": "fake desc"
-#           }
-#           EXPECTED_MSG = {
-#               'msg': 'Device registered with success',
-#               'id': DEVICE_ID
-#           }
+        with app.test_client() as cli:
+            DEVICE_ID = 'fakeid'
+            BODY = {
+                "serial-number": "fake-serial",
+                "model": "fake-model",
+                "description": "fake desc"
+            }
+            EXPECTED_MSG = {
+                'msg': 'Device registered with success',
+                'id': DEVICE_ID
+            }
+            FAKE_DEVICE = Device(
+                id=DEVICE_ID,
+                serial=BODY['serial-number'],
+                model=BODY['model'],
+                desc=BODY['description']
+            )
 
-#           sample_mock.return_value = DEVICE_ID
+            sample_mock.return_value = DEVICE_ID
 
-#           ret = cli.post('/devices/', json=BODY)
+            ret = cli.post('/devices/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 201)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 201)
 
-#           jwt_required_mock.assert_called_once()
+            jwt_required_mock.assert_called_once()
+            sample_mock.assert_called_once()
+            add_mock.assert_called_once_with(FAKE_DEVICE)
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device_with_missing_model(self, add_mock, \
-#                                               jwt_required_mock):
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_model(self, add_mock, \
+                                                jwt_required_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           BODY = {
-#               "serial-number": "fake-serial",
-#               "description": "fake-desc",
-#           }
-#           EXPECTED_MSG = { 'msg': 'Missing required data' }
+        with app.test_client() as cli:
+            BODY = {
+                "serial-number": "fake-serial",
+                "description": "fake-desc",
+            }
+            EXPECTED_MSG = { 'msg': 'Missing required data' }
 
-#           ret = cli.post('/devices/', json=BODY)
+            ret = cli.post('/devices/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
 
-#           jwt_required_mock.assert_called_once()
-#           add_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            add_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device_with_blank_model(self, add_mock, \
-#                                             jwt_required_mock):
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_blank_model(self, add_mock, \
+                                              jwt_required_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           BODY = {
-#               "serial-number": "fake-serial",
-#               "model": "",
-#               "description": "fake-desc",
-#           }
-#           EXPECTED_MSG = { 'msg': 'Bad request' }
+        with app.test_client() as cli:
+            BODY = {
+                "serial-number": "fake-serial",
+                "model": "",
+                "description": "fake-desc",
+            }
+            EXPECTED_MSG = { 'msg': 'Bad request' }
 
-#           ret = cli.post('/devices/', json=BODY)
+            ret = cli.post('/devices/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
 
-#           jwt_required_mock.assert_called_once()
-#           add_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            add_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device_with_missing_serial(self, add_mock, \
-#                                                jwt_required_mock):
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_serial(self, add_mock, \
+                                                 jwt_required_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           BODY = {
-#               "description": "fake desc",
-#               "model": "fakemodel",
-#           }
-#           EXPECTED_MSG = { 'msg': 'Missing required data' }
+        with app.test_client() as cli:
+            BODY = {
+                "description": "fake desc",
+                "model": "fakemodel",
+            }
+            EXPECTED_MSG = { 'msg': 'Missing required data' }
 
-#           ret = cli.post('/devices/', json=BODY)
+            ret = cli.post('/devices/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
 
-#           jwt_required_mock.assert_called_once()
-#           add_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            add_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device_with_blank_serial(self, add_mock, \
-#                                              jwt_required_mock):
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_blank_serial(self, add_mock, \
+                                               jwt_required_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           BODY = {
-#               "serial-number": "",
-#               "model": "fakemodel",
-#               "description": "fake desc"
-#           }
-#           EXPECTED_MSG = { 'msg': 'Bad request' }
+        with app.test_client() as cli:
+            BODY = {
+                "serial-number": "",
+                "model": "fakemodel",
+                "description": "fake desc"
+            }
+            EXPECTED_MSG = { 'msg': 'Bad request' }
 
-#           ret = cli.post('/devices/', json=BODY)
+            ret = cli.post('/devices/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
 
-#           jwt_required_mock.assert_called_once()
-#           add_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            add_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device_with_missing_desc(self, add_mock, \
-#                                              jwt_required_mock):
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.devices.Devices.add')
+    def test_register_device_with_missing_desc(self, add_mock, \
+                                               jwt_required_mock):
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           BODY = {
-#               "serial-number": "fake-serial",
-#               "model": "fakemodel",
-#           }
-#           EXPECTED_MSG = { 'msg': 'Missing required data' }
+        with app.test_client() as cli:
+            BODY = {
+                "serial-number": "fake-serial",
+                "model": "fakemodel",
+            }
+            EXPECTED_MSG = { 'msg': 'Missing required data' }
 
-#           ret = cli.post('/devices/', json=BODY)
+            ret = cli.post('/devices/', json=BODY)
 
-#           self.assertEqual(ret.json, EXPECTED_MSG)
-#           self.assertEqual(ret.status_code, 400)
+            self.assertEqual(ret.json, EXPECTED_MSG)
+            self.assertEqual(ret.status_code, 400)
 
-#           jwt_required_mock.assert_called_once()
-#           add_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            add_mock.assert_not_called()
 
 #   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
 #   @patch('app.storage.devices.Devices.add')
