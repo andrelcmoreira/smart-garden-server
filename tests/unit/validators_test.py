@@ -4,88 +4,122 @@ from app.validators import validate_field
 
 class ValidatorsTest(TestCase):
 
-    def test_validate_field_with_valid_value(self):
-        field = 'id'
+    '''
+    TODO
+    '''
+
+    def test_validate_field_with_valid_id(self):
+        '''
+        TODO
+        '''
         value = '1234efgh'
 
-        self.assertTrue(validate_field(field, value))
+        self.assertTrue(validate_field('id', value))
 
-    def test_validate_field_with_invalid_value(self):
-        field = 'id'
+    def test_validate_field_with_invalid_id(self):
+        '''
+        TODO
+        '''
         value = 'ABCDE123@!_'
 
-        self.assertFalse(validate_field(field, value))
+        self.assertFalse(validate_field('id', value))
 
-#   def test_validate_user_with_valid_entry(self):
-#       user_name = 'admin'
+    def test_validate_field_with_blank_id(self):
+        '''
+        TODO
+        '''
+        self.assertFalse(validate_field('id', ''))
 
-#       self.assertTrue(__is_user_valid(user_name))
 
-#   def test_validate_user_with_blank_entry(self):
-#       self.assertFalse(__is_user_valid(''))
+    def test_validate_field_with_valid_user(self):
+        '''
+        TODO
+        '''
+        user_name = 'admin'
 
-#   def test_validate_user_with_invalid_entry(self):
-#       user_name = '@dm1n_1234!'
+        self.assertTrue(validate_field('user', user_name))
 
-#       self.assertFalse(__is_user_valid(user_name))
+    def test_validate_field_with_blank_user(self):
+        '''
+        TODO
+        '''
+        self.assertFalse(validate_field('user', ''))
 
-#   def test_validate_password_with_valid_entry(self):
-#       password = '_P@$$sw0rd!'
+    def test_validate_field_with_invalid_user(self):
+        '''
+        TODO
+        '''
+        user_name = '@dm1n_1234!'
 
-#       self.assertTrue(__is_password_valid(password))
+        self.assertFalse(validate_field('user', user_name))
 
-#   def test_validate_password_with_blank_entry(self):
-#       self.assertFalse(__is_password_valid(''))
+    def test_validate_field_with_valid_pass(self):
+        '''
+        TODO
+        '''
+        password = '_P@$$sw0rd!'
 
-#   def test_validate_password_with_invalid_entry(self):
-#       password = '   _p@$$_'
+        self.assertTrue(validate_field('password', password))
 
-#       self.assertFalse(__is_password_valid(password))
+    def test_validate_field_with_blank_pass(self):
+        '''
+        TODO
+        '''
+        self.assertFalse(validate_field('password', ''))
 
-#   def test_validate_serial_with_valid_entry(self):
-#       serial = 'ABCDE-12345'
+    def test_validate_field_with_invalid_pass(self):
+        '''
+        TODO
+        '''
+        password = '   _p@$$_'
 
-#       self.assertTrue(__is_serial_valid(serial))
+        self.assertFalse(validate_field('password', password))
 
-#   def test_validate_serial_with_blank_entry(self):
-#       serial = ''
+    def test_validate_field_with_valid_serial(self):
+        '''
+        TODO
+        '''
+        serial = 'ABCDE-12345'
 
-#       self.assertFalse(__is_serial_valid(serial))
+        self.assertTrue(validate_field('serial-number', serial))
 
-#   def test_validate_serial_with_invalid_entry(self):
-#       serial = 'abcd_12345'
+    def test_validate_field_with_blank_serial(self):
+        '''
+        TODO
+        '''
+        self.assertFalse(validate_field('serial-number', ''))
 
-#       self.assertFalse(__is_serial_valid(serial))
+    def test_validate_field_with_invalid_serial(self):
+        '''
+        TODO
+        '''
+        serial = '@bcd_!2345'
 
-#   def test_validate_model_with_valid_entry(self):
-#       model = 'VALID_MODEL'
+        self.assertFalse(validate_field('serial-number', serial))
 
-#       self.assertTrue(__is_model_valid(model))
+    def test_validate_field_with_valid_model(self):
+        '''
+        TODO
+        '''
+        model = 'VALID_MODEL'
 
-#   def test_validate_model_with_blank_entry(self):
-#       model = ''
+        self.assertTrue(validate_field('model', model))
 
-#       self.assertFalse(__is_model_valid(model))
+    def test_validate_field_with_blank_model(self):
+        '''
+        TODO
+        '''
+        self.assertFalse(validate_field('model', ''))
 
-#   def test_validate_model_with_invalid_entry(self):
-#       model = '@#$MODEL'
+    def test_validate_field_with_invalid_model(self):
+        '''
+        TODO
+        '''
+        model = '@#$MODEL'
 
-#       self.assertFalse(__is_model_valid(model))
+        self.assertFalse(validate_field('model', model))
 
-#   def test_validate_id_with_valid_entry(self):
-#       dev_id = '1234efgh'
-
-#       self.assertTrue(__is_id_valid(dev_id))
-
-#   def test_validate_id_with_blank_entry(self):
-#       dev_id = ''
-
-#       self.assertFalse(__is_id_valid(dev_id))
-
-#   def test_validate_id_with_invalid_entry(self):
-#       dev_id = '@ABC$EF01234'
-
-#       self.assertFalse(__is_id_valid(dev_id))
+# TODO: validate_request tests
 
 if __name__ == "__main__":
     main()
