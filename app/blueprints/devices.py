@@ -14,6 +14,10 @@ devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 @devices_bp.route('/', methods=['POST'])
 @jwt_required()
 def register_device():
+    '''
+    TODO
+
+    '''
     app.logger.debug(f'request payload -> {request.json}')
 
     if not validate_request(request.json):
@@ -22,17 +26,21 @@ def register_device():
     try:
         serial = request.json['serial-number']
         model = request.json['model']
-        desc = request.json['description']
     except KeyError as key:
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    dev_id = ''.join(random.sample(ascii_lowercase + digits, 8)) # TODO: remove this logic from here?
+    dev_id = ''.join(random.sample(ascii_lowercase + digits, 8))
     if not dev_id:
         app.logger.debug('empty device id')
         abort(500, 'Failed to register the device into the database')
 
-    dev = Device(id=dev_id, serial=serial, model=model, desc=desc)
+    dev = Device(
+        id=dev_id,
+        serial=serial,
+        model=model,
+        desc=request.json.get('description')
+    )
     DEVICES_DB.add(dev)
 
     return jsonify(
@@ -45,6 +53,10 @@ def register_device():
 @devices_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_devices():
+    '''
+    TODO
+
+    '''
     devices = DEVICES_DB.get_all()
 
     return jsonify(devices), 200
@@ -52,6 +64,10 @@ def get_devices():
 @devices_bp.route('/<string:dev_id>', methods=['GET'])
 @jwt_required()
 def get_device(dev_id):
+    '''
+    TODO
+
+    '''
     app.logger.debug(f'device id -> {dev_id}')
 
     if not validate_field('id', dev_id):
@@ -66,6 +82,10 @@ def get_device(dev_id):
 @devices_bp.route('/<string:dev_id>', methods=['DELETE'])
 @jwt_required()
 def del_device(dev_id):
+    '''
+    TODO
+
+    '''
     app.logger.debug(f'device id -> {dev_id}')
 
     if not validate_field('id', dev_id):
@@ -82,6 +102,10 @@ def del_device(dev_id):
 @devices_bp.route('/<string:dev_id>', methods=['PUT'])
 @jwt_required()
 def update_device(dev_id):
+    '''
+    TODO
+
+    '''
     app.logger.debug(f'device id -> {dev_id}')
 
     if not validate_field('id', dev_id):
