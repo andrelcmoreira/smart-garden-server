@@ -9,6 +9,9 @@ login_bp = Blueprint('login', __name__, url_prefix='/login')
 
 @login_bp.route('/', methods=['POST'])
 def login():
+    '''
+    TODO
+    '''
     app.logger.debug(f'request payload: {request.json}')
 
     if not validate_request(request.json):

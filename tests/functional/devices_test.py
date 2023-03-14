@@ -9,10 +9,16 @@ from run import create_app
 class DeviceEndpointTest(TestCase):
 
     # TODO: remove mocks
+    '''
+    TODO
+    '''
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
     @patch('app.storage.devices.Devices.get_all')
     def test_get_devices_with_empty_db(self, get_all_mock, jwt_required_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -170,6 +176,9 @@ class DeviceEndpointTest(TestCase):
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
     @patch('app.storage.devices.Devices.add')
     def test_register_device(self, add_mock, jwt_required_mock, sample_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -205,6 +214,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_missing_model(self, add_mock, \
                                                 jwt_required_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -226,6 +238,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_blank_model(self, add_mock, \
                                               jwt_required_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -248,6 +263,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_missing_serial(self, add_mock, \
                                                  jwt_required_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -269,6 +287,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_blank_serial(self, add_mock, \
                                                jwt_required_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -292,6 +313,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_missing_desc(self, add_mock, \
                                                jwt_required_mock, sample_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -328,6 +352,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_blank_desc(self, add_mock, \
                                              jwt_required_mock, sample_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -363,6 +390,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.add')
     def test_register_device_with_no_parameters(self, add_mock, \
                                                 jwt_required_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -440,6 +470,9 @@ class DeviceEndpointTest(TestCase):
 
     @patch('app.storage.devices.Devices.get_all')
     def test_get_devices_without_token(self, get_all_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -453,6 +486,9 @@ class DeviceEndpointTest(TestCase):
 
     @patch('app.storage.devices.Devices.get')
     def test_get_device_without_token(self, get_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -469,6 +505,9 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.get')
     @patch('app.storage.devices.Devices.rm')
     def test_del_device_without_token(self, rm_mock, get_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -485,6 +524,9 @@ class DeviceEndpointTest(TestCase):
 
     @patch('app.storage.devices.Devices.add')
     def test_register_device_without_token(self, add_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
@@ -505,14 +547,17 @@ class DeviceEndpointTest(TestCase):
     @patch('app.storage.devices.Devices.get')
     @patch('app.storage.devices.Devices.update')
     def test_update_device_without_token(self, update_mock, get_mock):
+        '''
+        TODO
+        '''
         app = create_app()
 
         with app.test_client() as cli:
             dev_id = 'fake_id'
-            DATA = { 'param': 'foo-param', 'value': 'foo-value' }
+            data = { 'param': 'foo-param', 'value': 'foo-value' }
             expected_msg = { 'msg': 'Missing Authorization Header' }
 
-            ret = cli.put('/devices/' + dev_id, json=DATA)
+            ret = cli.put('/devices/' + dev_id, json=data)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 401)
