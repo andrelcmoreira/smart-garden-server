@@ -32,6 +32,11 @@ __VALIDATORS = [
         'pattern': '^[a-zA-Z\d ]+$'
     },
     {
+        'field': 'group',
+        'required': False,
+        'pattern': '^[a-zA-Z\d ]+$'
+    },
+    {
         'field': 'param',
         'required': True,
         'pattern': '^[a-z_\-]+$'
