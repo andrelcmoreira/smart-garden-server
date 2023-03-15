@@ -45,6 +45,11 @@ __VALIDATORS = [
         'field': 'value',
         'required': True,
         'pattern': '^[\w@#\$&\*\-!\?;:]+$'
+    },
+    {
+        'field': 'interval',
+        'required': True,
+        'pattern': '^\d+$'
     }
 ]
 

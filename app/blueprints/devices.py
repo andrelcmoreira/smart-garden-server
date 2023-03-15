@@ -6,6 +6,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
 from app.storage.models.device import Device
+from app.storage.models.config import Config
 from app.validators import validate_request, validate_field
 from . import DEVICES_DB
 

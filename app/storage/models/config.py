@@ -4,4 +4,4 @@ from dataclasses import dataclass
 class Config:
     id: str
     group: str
-    interval: int
+    interval: str
