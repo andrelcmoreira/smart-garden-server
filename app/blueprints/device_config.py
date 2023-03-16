@@ -42,6 +42,9 @@ def get_config(dev_id):
     TODO
 
     '''
+    if (not validate_field('id', dev_id)):
+        abort(400, 'Bad request')
+
     config = CONFIGS_DB.get(dev_id)
 
     return jsonify(config), 200
