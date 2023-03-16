@@ -34,3 +34,14 @@ def config_device(dev_id):
     CONFIGS_DB.add(cfg)
 
     return jsonify({ 'msg': 'Configuration registered with success' }), 201
+
+@device_cfg_bp.route('/', methods=['GET'])
+@jwt_required()
+def get_config(dev_id):
+    '''
+    TODO
+
+    '''
+    config = CONFIGS_DB.get(dev_id)
+
+    return jsonify(config), 200
