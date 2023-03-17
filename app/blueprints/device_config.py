@@ -4,10 +4,9 @@ from flask_jwt_extended import jwt_required
 
 from app.storage.models.config import Config
 from app.validators import validate_request, validate_field
-from . import CONFIGS_DB
+from . import CONFIGS_DB, DEVICES_DB
 
-device_cfg_bp = Blueprint('device_config', __name__,
-                          url_prefix='/devices')
+device_cfg_bp = Blueprint('device_config', __name__, url_prefix='/devices')
 
 @device_cfg_bp.route('/<string:dev_id>/config/', methods=['POST'])
 @jwt_required()
@@ -22,6 +21,10 @@ def config_device(dev_id):
     if (not validate_field('id', dev_id)) or \
         (not validate_request(request.json)):
         abort(400, 'Bad request')
+
+    if not DEVICES_DB.get(dev_id):
+        app.logger.debug(f'device {dev_id} not found on database')
+        abort(404, 'Device not registered in database')
 
     try:
         interval = request.json['interval']

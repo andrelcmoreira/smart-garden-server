@@ -58,9 +58,6 @@ def get_devices():
     TODO
 
     '''
-    if (not validate_field('id', dev_id)):
-        abort(400, 'Bad request')
-
     devices = DEVICES_DB.get_all()
 
     return jsonify(devices), 200
