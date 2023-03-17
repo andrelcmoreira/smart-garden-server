@@ -7,9 +7,9 @@ from app.validators import validate_request, validate_field
 from . import CONFIGS_DB
 
 device_cfg_bp = Blueprint('device_config', __name__,
-                          url_prefix='/devices/<string:dev_id>/config')
+                          url_prefix='/devices')
 
-@device_cfg_bp.route('/', methods=['POST'])
+@device_cfg_bp.route('/<string:dev_id>/config/', methods=['POST'])
 @jwt_required()
 def config_device(dev_id):
     '''
@@ -35,7 +35,7 @@ def config_device(dev_id):
 
     return jsonify({ 'msg': 'Configuration registered with success' }), 201
 
-@device_cfg_bp.route('/', methods=['GET'])
+@device_cfg_bp.route('/<string:dev_id>/config/', methods=['GET'])
 @jwt_required()
 def get_config(dev_id):
     '''
@@ -48,3 +48,14 @@ def get_config(dev_id):
     config = CONFIGS_DB.get(dev_id)
 
     return jsonify(config), 200
+
+@device_cfg_bp.route('/config/', methods=['GET'])
+@jwt_required()
+def get_configs():
+    '''
+    TODO
+
+    '''
+    configs = CONFIGS_DB.get_all()
+
+    return jsonify(configs), 200
