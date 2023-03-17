@@ -59,3 +59,23 @@ def get_configs():
     configs = CONFIGS_DB.get_all()
 
     return jsonify(configs), 200
+
+@device_cfg_bp.route('/<string:dev_id>/config/', methods=['DELETE'])
+@jwt_required()
+def del_config(dev_id):
+    '''
+    TODO
+
+    '''
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if not validate_field('id', dev_id):
+        abort(400, 'Bad request')
+
+    if not CONFIGS_DB.get(dev_id):
+        app.logger.debug(f'config for device {dev_id} not found')
+        abort(404, "There's no config for the specific device")
+
+    CONFIGS_DB.rm(dev_id)
+
+    return jsonify({ 'msg': 'Config deleted from database' }), 200
