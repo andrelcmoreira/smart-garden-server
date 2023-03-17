@@ -112,7 +112,8 @@ def update_device(dev_id):
     '''
     app.logger.debug(f'device id -> {dev_id}')
 
-    if not validate_field('id', dev_id):
+    if (not validate_field('id', dev_id)) or \
+        (not validate_request(request.json)):
         abort(400, 'Bad request')
 
     try:

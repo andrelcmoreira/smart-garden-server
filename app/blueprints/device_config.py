@@ -79,3 +79,31 @@ def del_config(dev_id):
     CONFIGS_DB.rm(dev_id)
 
     return jsonify({ 'msg': 'Config deleted from database' }), 200
+
+@device_cfg_bp.route('/<string:dev_id>/config/', methods=['PUT'])
+@jwt_required()
+def update_config(dev_id):
+    '''
+    TODO
+
+    '''
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if (not validate_field('id', dev_id)) or \
+        (not validate_request(request.json)):
+        abort(400, 'Bad request')
+
+    try:
+        param = request.json['param']
+        val = request.json['value']
+    except KeyError as key:
+        app.logger.debug(f'missing {key} in request')
+        abort(400, 'Missing required data')
+
+    if not CONFIGS_DB.get(dev_id):
+        app.logger.debug(f'config for device {dev_id} not found')
+        abort(404, "There's no config for the specific device")
+
+    CONFIGS_DB.update(dev_id, param, val)
+
+    return jsonify({ 'msg': 'Config updated in database' }), 200
