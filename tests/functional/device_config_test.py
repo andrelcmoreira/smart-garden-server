@@ -97,7 +97,7 @@ class DeviceConfigEndpointTest(TestCase):
         with app.test_client() as cli:
             dev_id = 'fakeid'
             cfg_data = {
-                "id": "fakeid",
+                "id": dev_id,
                 "group": "fake-group",
                 "interval": "10"
             }
@@ -112,61 +112,62 @@ class DeviceConfigEndpointTest(TestCase):
             jwt_required_mock.assert_called_once()
             get_mock.assert_called_once_with(dev_id)
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.get')
-#   @patch('app.storage.devices.Devices.rm')
-#   def test_del_device_with_existent_device(self, rm_mock, get_mock, \
-#                                            jwt_required_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.configs.Configs.get')
+    @patch('app.storage.configs.Configs.rm')
+    def test_del_config_with_existent_config(self, rm_mock, get_mock, \
+                                             jwt_required_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           dev_id = 'fakeid'
-#           expected_msg = { 'msg': 'Device unregistered from database' }
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            cfg_data = {
+                "id": dev_id,
+                "group": "fake-group",
+                "interval": "10"
+            }
+            expected_msg = { 'msg': 'Config deleted from database' }
 
-#           get_mock.return_value = {
-#               "desc": "fake-desc",
-#               "id": "fake-id",
-#               "serial": "fake-serial"
-#           }
+            get_mock.return_value = cfg_data
 
-#           ret = cli.delete('/devices/' + dev_id)
+            ret = cli.delete(f'/devices/{dev_id}/config/')
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 200)
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 200)
 
-#           jwt_required_mock.assert_called_once()
-#           get_mock.assert_called_once_with(dev_id)
-#           rm_mock.assert_called_once_with(dev_id)
+            jwt_required_mock.assert_called_once()
+            get_mock.assert_called_once_with(dev_id)
+            rm_mock.assert_called_once_with(dev_id)
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.get')
-#   @patch('app.storage.devices.Devices.rm')
-#   def test_del_device_with_not_existent_device(self, rm_mock, get_mock, \
-#                                                jwt_required_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.configs.Configs.get')
+    @patch('app.storage.configs.Configs.rm')
+    def test_del_config_with_not_existent_config(self, rm_mock, get_mock, \
+                                                 jwt_required_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           dev_id = 'fakeid'
-#           expected_msg = {
-#               "msg": "The device isn't registered on database"
-#           }
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            expected_msg = {
+                "msg": "There's no config for the specific device"
+            }
 
-#           get_mock.return_value = {}
+            get_mock.return_value = {}
 
-#           ret = cli.delete('/devices/' + dev_id)
+            ret = cli.delete(f'/devices/{dev_id}/config/')
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 404)
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 404)
 
-#           jwt_required_mock.assert_called_once()
-#           get_mock.assert_called_once_with(dev_id)
-#           rm_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            get_mock.assert_called_once_with(dev_id)
+            rm_mock.assert_not_called()
 
 #   @patch('random.sample')
 #   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
