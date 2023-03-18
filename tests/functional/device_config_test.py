@@ -465,102 +465,104 @@ class DeviceConfigEndpointTest(TestCase):
 #                data['value']
 #            )
 
-#   @patch('app.storage.devices.Devices.get_all')
-#   def test_get_devices_without_token(self, get_all_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+    @patch('app.storage.configs.Configs.get_all')
+    def test_get_config_without_token(self, get_all_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           expected_msg = { 'msg': 'Missing Authorization Header' }
-#           ret = cli.get('/devices/')
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            expected_msg = { 'msg': 'Missing Authorization Header' }
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 401)
+            ret = cli.get(f'/devices/{dev_id}/config/')
 
-#           get_all_mock.assert_not_called()
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 401)
 
-#   @patch('app.storage.devices.Devices.get')
-#   def test_get_device_without_token(self, get_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+            get_all_mock.assert_not_called()
 
-#       with app.test_client() as cli:
-#           dev_id = 'fake_id'
-#           expected_msg = { 'msg': 'Missing Authorization Header' }
+    @patch('app.storage.configs.Configs.get')
+    def test_get_config_without_token(self, get_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#           ret = cli.get('/devices/' + dev_id)
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            expected_msg = { 'msg': 'Missing Authorization Header' }
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 401)
+            ret = cli.get(f'/devices/{dev_id}/config/')
 
-#           get_mock.assert_not_called()
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 401)
 
-#   @patch('app.storage.devices.Devices.get')
-#   @patch('app.storage.devices.Devices.rm')
-#   def test_del_device_without_token(self, rm_mock, get_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+            get_mock.assert_not_called()
 
-#       with app.test_client() as cli:
-#           dev_id = 'fake_id'
-#           expected_msg = { 'msg': 'Missing Authorization Header' }
+    @patch('app.storage.configs.Configs.get')
+    @patch('app.storage.configs.Configs.rm')
+    def test_del_config_without_token(self, rm_mock, get_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#           ret = cli.delete('/devices/' + dev_id)
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            expected_msg = { 'msg': 'Missing Authorization Header' }
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 401)
+            ret = cli.delete(f'/devices/{dev_id}/config/')
 
-#           get_mock.assert_not_called()
-#           rm_mock.assert_not_called()
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 401)
 
-#   @patch('app.storage.devices.Devices.add')
-#   def test_register_device_without_token(self, add_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+            get_mock.assert_not_called()
+            rm_mock.assert_not_called()
 
-#       with app.test_client() as cli:
-#           body = {
-#               "model": "fake-model",
-#               "serial-number": "fake-serial",
-#               "description": "fake-desc",
-#           }
-#           expected_msg = { 'msg': 'Missing Authorization Header' }
+    @patch('app.storage.configs.Configs.add')
+    def test_register_config_without_token(self, add_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#           ret = cli.post('/devices/', json=body)
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            body = {
+                "group": "fake-group",
+                "interval": "20"
+            }
+            expected_msg = { 'msg': 'Missing Authorization Header' }
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 401)
+            ret = cli.post(f'/devices/{dev_id}/config/', json=body)
 
-#           add_mock.assert_not_called()
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 401)
 
-#   @patch('app.storage.devices.Devices.get')
-#   @patch('app.storage.devices.Devices.update')
-#   def test_update_device_without_token(self, update_mock, get_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+            add_mock.assert_not_called()
 
-#       with app.test_client() as cli:
-#           dev_id = 'fake_id'
-#           data = { 'param': 'foo-param', 'value': 'foo-value' }
-#           expected_msg = { 'msg': 'Missing Authorization Header' }
+    @patch('app.storage.configs.Configs.get')
+    @patch('app.storage.configs.Configs.update')
+    def test_update_config_without_token(self, update_mock, get_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#           ret = cli.put('/devices/' + dev_id, json=data)
+        with app.test_client() as cli:
+            dev_id = 'fake_id'
+            data = { 'param': 'interval', 'value': '10' }
+            expected_msg = { 'msg': 'Missing Authorization Header' }
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 401)
+            ret = cli.put(f'/devices/{dev_id}/config/', json=data)
 
-#           get_mock.assert_not_called()
-#           update_mock.assert_not_called()
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 401)
+
+            get_mock.assert_not_called()
+            update_mock.assert_not_called()
 
 if __name__ == "__main__":
     main()
