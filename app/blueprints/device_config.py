@@ -48,9 +48,11 @@ def get_config(dev_id):
     if (not validate_field('id', dev_id)):
         abort(400, 'Bad request')
 
-    config = CONFIGS_DB.get(dev_id)
+    cfg = CONFIGS_DB.get(dev_id)
+    if not cfg:
+        abort(404, "The config isn't registered on database")
 
-    return jsonify(config), 200
+    return jsonify(cfg), 200
 
 @device_cfg_bp.route('/config/', methods=['GET'])
 @jwt_required()
