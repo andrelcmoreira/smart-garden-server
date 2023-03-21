@@ -403,67 +403,68 @@ class DeviceConfigEndpointTest(TestCase):
 #           jwt_required_mock.assert_called_once()
 #           add_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.get')
-#   @patch('app.storage.devices.Devices.update')
-#   def test_update_not_existent_device(self, update_mock, get_mock, \
-#                                       jwt_required_mock):
-#       '''
-#       TODO
-#       '''
-#       app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.configs.Configs.get')
+    @patch('app.storage.configs.Configs.update')
+    def test_update_not_existent_config(self, update_mock, get_mock, \
+                                        jwt_required_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
 
-#       with app.test_client() as cli:
-#           dev_id = 'fakeid'
-#           expected_msg = {
-#               "msg": "The device isn't registered on database"
-#           }
-#           data = { 'param': 'foo-param', 'value': 'foo-value' }
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            expected_msg = {
+                "msg": "There's no config for the specific device"
+            }
+            data = { 'param': 'foo-param', 'value': 'foo-value' }
 
-#           get_mock.return_value = {}
+            get_mock.return_value = {}
 
-#           ret = cli.put('/devices/' + dev_id, json=data)
+            ret = cli.put(f'/devices/{dev_id}/config/', json=data)
 
-#           self.assertEqual(ret.json, expected_msg)
-#           self.assertEqual(ret.status_code, 404)
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 404)
 
-#           jwt_required_mock.assert_called_once()
-#           get_mock.assert_called_once_with(dev_id)
-#           update_mock.assert_not_called()
+            jwt_required_mock.assert_called_once()
+            get_mock.assert_called_once_with(dev_id)
+            update_mock.assert_not_called()
 
-#   @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-#   @patch('app.storage.devices.Devices.get')
-#   @patch('app.storage.devices.Devices.update')
-#   def test_update_existent_device(self, update_mock, get_mock, \
-#                                   jwt_required_mock):
-#        '''
-#        TODO
-#        '''
-#        app = create_app()
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('app.storage.configs.Configs.get')
+    @patch('app.storage.configs.Configs.update')
+    def test_update_existent_config(self, update_mock, get_mock, \
+                                    jwt_required_mock):
+         '''
+         TODO
+         '''
+         app = create_app()
 
-#        with app.test_client() as cli:
-#            dev_id = 'fakeid'
-#            data = { 'param': 'foo-param', 'value': 'foo-value' }
-#            expected_msg = { "msg": "Device updated in database" }
+         with app.test_client() as cli:
+             dev_id = 'fakeid'
+             data = { 'param': 'foo-param', 'value': 'foo-value' }
+             expected_msg = { "msg": "Config updated in database" }
+             cfg_data = {
+                 "id": dev_id,
+                 "group": "fake-group",
+                 "interval": "10"
+             }
 
-#            get_mock.return_value = {
-#                "device-id": "fake-id",
-#                "serial-number": "fake-serial",
-#                "description": "fake-desc",
-#            }
+             get_mock.return_value = cfg_data
 
-#            ret = cli.put('/devices/' + dev_id, json=data)
+             ret = cli.put(f'/devices/{dev_id}/config/', json=data)
 
-#            self.assertEqual(ret.json, expected_msg)
-#            self.assertEqual(ret.status_code, 200)
+             self.assertEqual(ret.json, expected_msg)
+             self.assertEqual(ret.status_code, 200)
 
-#            jwt_required_mock.assert_called_once()
-#            get_mock.assert_called_once_with(dev_id)
-#            update_mock.assert_called_once_with(
-#                dev_id,
-#                data['param'],
-#                data['value']
-#            )
+             jwt_required_mock.assert_called_once()
+             get_mock.assert_called_once_with(dev_id)
+             update_mock.assert_called_once_with(
+                 dev_id,
+                 data['param'],
+                 data['value']
+             )
 
     @patch('app.storage.configs.Configs.get_all')
     def test_get_config_without_token(self, get_all_mock):
