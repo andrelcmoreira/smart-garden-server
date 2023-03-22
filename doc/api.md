@@ -27,7 +27,7 @@ available operations and expected results).
 
 ```json
 {
-    "token": "jwt-token"
+  "token": "jwt-token"
 }
 ```
 
@@ -35,7 +35,7 @@ available operations and expected results).
 
 ```json
 {
-    "msg": "Invalid user credentials"
+  "msg": "Invalid user credentials"
 }
 ```
 
@@ -43,13 +43,7 @@ available operations and expected results).
 
 **Get a specific device**
 
-`GET /devices/<string:id>`
-
-**Arguments**
-
-|   parameter   | mandatory |           description              |
-|---------------|-----------|------------------------------------|
-|   device-id   |    yes    | The ID of device                   |
+`GET /devices/<id>`
 
 **Expected response**
 
@@ -57,10 +51,10 @@ available operations and expected results).
 
 ```json
 {
-    "desc": "foo-desc",
-    "dev_id": "foo-id",
-    "model": "foo-model",
-    "serial": "foo-number"
+  "desc": "foo-desc",
+  "dev_id": "foo-id",
+  "model": "foo-model",
+  "serial": "foo-number"
 }
 ```
 
@@ -68,7 +62,7 @@ available operations and expected results).
 
 ```json
 {
-    "msg": "The device isn't registered on database"
+  "msg": "The device isn't registered on database"
 }
 ```
 
@@ -82,18 +76,18 @@ available operations and expected results).
 
 ```json
 [
-    {
-        "desc": "foo-desc",
-        "dev_id": "foo-id",
-        "model": "foo-model",
-        "serial": "foo-number"
-    },
-    {
-        "desc": "bar-desc",
-        "dev_id": "bar-id",
-        "model": "bar-model",
-        "serial": "bar-number"
-    }
+  {
+    "desc": "foo-desc",
+    "dev_id": "foo-id",
+    "model": "foo-model",
+    "serial": "foo-number"
+  },
+  {
+    "desc": "bar-desc",
+    "dev_id": "bar-id",
+    "model": "bar-model",
+    "serial": "bar-number"
+  }
 ]
 ```
 
@@ -101,7 +95,7 @@ available operations and expected results).
 
 ```json
 {
-    "msg": "There's no devices registered on database"
+  "msg": "There's no devices registered on database"
 }
 ```
 
@@ -123,45 +117,38 @@ available operations and expected results).
 
 ```json
 {
-    "msg": "Device registered with success"
+  "msg": "Device registered with success"
 }
 ```
 
 **Unregister a device**
 
-`DELETE /devices/<string:id>`
-
-**Arguments**
-
-|   parameter   | mandatory |           description              |
-|---------------|-----------|------------------------------------|
-|   device-id   |    yes    | The ID of device                   |
+`DELETE /devices/<id>`
 
 **Expected response**
 
 - **200** on success
 ```json
 {
-    "msg": "Device unregistered with success"
+  "msg": "Device unregistered with success"
 }
 ```
 
 - **404** on error
 ```json
 {
-    "msg": "The device isn\'t registered on database"
+  "msg": "The device isn\'t registered on database"
 }
 ```
 
 **Update a device**
 
-`PUT /devices/<string:id>`
+`PUT /devices/<id>`
 
 **Arguments**
 
 |  parameter  | mandatory |                   description                   |
 |-------------|-----------|-------------------------------------------------|
-|  device-id  |    yes    | The ID of device                                |
 |    param    |    yes    | Parameter to be updated                         |
 |    value    |    yes    | New value of the parameter to be updated        |
 
@@ -171,7 +158,7 @@ available operations and expected results).
 
 ```json
 {
-    "msg": "Device updated with success"
+  "msg": "Device updated with success"
 }
 ```
 
@@ -179,6 +166,133 @@ available operations and expected results).
 
 ```json
 {
-    "msg": "The device isn't registered on database"
+  "msg": "The device isn't registered on database"
+}
+```
+
+#### 2.2 Device configuration
+
+**Get a specific device configuration**
+
+`GET /devices/<id>/config`
+
+**Expected response**
+
+- **200** on success
+
+```json
+{
+  "dev_id": "foo-id",
+  "group": "foo-group",
+  "interval": "foo-interval",
+}
+```
+
+- **404** on error (when the config doesn't exist):
+
+```json
+{
+  "msg": "There's not configuration for the specified device"
+}
+```
+
+**Get all configurations**
+
+`GET /devices/config`
+
+**Expected response**
+
+- **200** on success
+
+```json
+[
+  {
+    "dev_id": "foo-id",
+    "group": "foo-group",
+    "interval": "foo-interval"
+  },
+  {
+    "dev_id": "bar-id",
+    "group": "bar-group",
+    "interval": "bar-interval"
+  }
+]
+```
+
+- **404** on error (when there's no config registered on database):
+
+```json
+{
+  "msg": "There's no configuration registered on database"
+}
+```
+
+**Register a new device configuration**
+
+`POST /devices/<id>/config`
+
+**Arguments**
+
+|   parameter   | mandatory |           description              |
+|---------------|-----------|------------------------------------|
+|     group     |    no     | The group of device                |
+|    interval   |    yes    | The operation interval of device   |
+
+**Expected response**
+
+- **201** on success
+
+```json
+{
+  "msg": "Configuration registered with success"
+}
+```
+
+**Unregister a device configuration**
+
+`DELETE /devices/<id>/config`
+
+**Expected response**
+
+- **200** on success
+```json
+{
+  "msg": "Configuration unregistered with success"
+}
+```
+
+- **404** on error
+```json
+{
+  "msg": "The device has no configuration"
+}
+```
+
+**Update a device configuration**
+
+`PUT /devices/<id>/config`
+
+**Arguments**
+
+|  parameter  | mandatory |                   description                   |
+|-------------|-----------|-------------------------------------------------|
+|    param    |    yes    | Parameter to be updated                         |
+|    value    |    yes    | New value of the parameter to be updated        |
+
+**Expected response**
+
+- **200** on success
+
+```json
+{
+  "msg": "Configuration updated with success"
+}
+```
+
+- **404** on error
+
+```json
+{
+  "msg": "There's no configuration for the specified device"
 }
 ```
