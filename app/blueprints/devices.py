@@ -36,6 +36,7 @@ def register_device():
         app.logger.debug('empty device id')
         abort(500, 'Failed to register the device into the database')
 
+    # TODO: verify if the ID is already in use by other device
     dev = Device(
         id=dev_id,
         serial=serial,

@@ -8,3 +8,6 @@ def resource_not_found(e):
 
 def internal_error(e):
     return jsonify({ 'msg': e.description }), 500
+
+def unauthorized_error(e):
+    return jsonify({ 'msg': e.description }), 401
