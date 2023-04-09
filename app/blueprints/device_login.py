@@ -9,7 +9,7 @@ from . import DEVICES_DB, CONFIGS_DB
 device_login_bp = Blueprint('device_login', __name__, url_prefix='/devices')
 
 @device_login_bp.route('/login/', methods=['POST'])
-def config_device():
+def login_device():
     '''
     TODO
 
