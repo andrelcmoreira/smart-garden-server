@@ -40,7 +40,7 @@ def config_device():
     cfg = CONFIGS_DB.get(dev_id)
     if not cfg:
         app.logger.debug(f"no config for '{dev_id}'")
-        abort(404, "There's not config for the specified device")
+        abort(404, "There's no config for the specified device")
 
     token = flask_jwt_extended.create_access_token(identity=(dev_id, serial))
 
