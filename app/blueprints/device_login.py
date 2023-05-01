@@ -3,7 +3,7 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
-from app.validators import validate_request, validate_field
+from app.validators import validate_request
 from . import DEVICES_DB, CONFIGS_DB
 
 device_login_bp = Blueprint('device_login', __name__, url_prefix='/devices')
@@ -11,7 +11,11 @@ device_login_bp = Blueprint('device_login', __name__, url_prefix='/devices')
 @device_login_bp.route('/login/', methods=['POST'])
 def login_device():
     '''
-    TODO
+    POST /devices/login endpoint implementation.
+
+    :returns: On success, the device token and the device configuration;
+              otherwise the suitable error reply (see the API documentation for
+              more informations).
 
     '''
     app.logger.debug(f'request payload -> {request.json}')
@@ -20,6 +24,7 @@ def login_device():
         abort(400, 'Bad request')
 
     try:
+        # mandatory parameters
         dev_id = request.json['id']
         serial = request.json['serial-number']
     except KeyError as key:
@@ -29,7 +34,7 @@ def login_device():
     dev = DEVICES_DB.get(dev_id)
     if not dev:
         app.logger.debug(f"device '{dev_id}' not found on database")
-        abort(404, 'Device not registered in database')
+        abort(404, 'Device not registered on database')
 
     if dev['serial'] != serial:
         app.logger.debug(

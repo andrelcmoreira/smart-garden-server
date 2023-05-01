@@ -6,7 +6,6 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
 from app.storage.models.device import Device
-from app.storage.models.config import Config
 from app.validators import validate_request, validate_field
 from . import DEVICES_DB
 
@@ -16,7 +15,11 @@ devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 @jwt_required()
 def register_device():
     '''
-    TODO
+    POST /devices endpoint implementation.
+
+    :returns: On success, a success reply, and the device's ID; otherwise the
+              suitable error reply (see the API documentation for more
+              informations).
 
     '''
     app.logger.debug(f'request payload -> {request.json}')
@@ -25,6 +28,7 @@ def register_device():
         abort(400, 'Bad request')
 
     try:
+        # mandatory parameters
         serial = request.json['serial-number']
         model = request.json['model']
     except KeyError as key:
@@ -56,7 +60,9 @@ def register_device():
 @jwt_required()
 def get_devices():
     '''
-    TODO
+    GET /devices endpoint implementation.
+
+    :returns: On success, all registered devices; otherwise an empty reply.
 
     '''
     devices = DEVICES_DB.get_all()
@@ -67,7 +73,12 @@ def get_devices():
 @jwt_required()
 def get_device(dev_id):
     '''
-    TODO
+    GET /devices/<id> endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, the device information; otherwise the suitable error
+              reply (see the API documentation for more informations).
 
     '''
     app.logger.debug(f'device id -> {dev_id}')
@@ -85,7 +96,12 @@ def get_device(dev_id):
 @jwt_required()
 def del_device(dev_id):
     '''
-    TODO
+    DELETE /devices/<id> endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
 
     '''
     app.logger.debug(f'device id -> {dev_id}')
@@ -105,7 +121,12 @@ def del_device(dev_id):
 @jwt_required()
 def update_device(dev_id):
     '''
-    TODO
+    PUT /devices/<id> endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
 
     '''
     app.logger.debug(f'device id -> {dev_id}')
@@ -115,6 +136,7 @@ def update_device(dev_id):
         abort(400, 'Bad request')
 
     try:
+        # mandatory parameters
         param = request.json['param']
         val = request.json['value']
     except KeyError as key:

@@ -12,7 +12,12 @@ device_cfg_bp = Blueprint('device_config', __name__, url_prefix='/devices')
 @jwt_required()
 def config_device(dev_id):
     '''
-    TODO
+    POST /devices/<id>/login endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
 
     '''
     app.logger.debug(f'device id -> {dev_id}')
@@ -24,9 +29,10 @@ def config_device(dev_id):
 
     if not DEVICES_DB.get(dev_id):
         app.logger.debug(f'device {dev_id} not found on database')
-        abort(404, 'Device not registered in database')
+        abort(404, 'Device not registered on database')
 
     try:
+        # mandatory parameters
         interval = request.json['interval']
     except KeyError as key:
         app.logger.debug(f'missing {key} in request')
@@ -42,7 +48,12 @@ def config_device(dev_id):
 @jwt_required()
 def get_config(dev_id):
     '''
-    TODO
+    GET /devices/<id>/config endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, the device configuration; otherwise the suitable error
+              reply (see the API documentation for more informations).
 
     '''
     if (not validate_field('id', dev_id)):
@@ -58,7 +69,10 @@ def get_config(dev_id):
 @jwt_required()
 def get_configs():
     '''
-    TODO
+    GET /devices/config endpoint implementation.
+
+    :returns: On success, all the device configurations; otherwise an empty
+              reply.
 
     '''
     configs = CONFIGS_DB.get_all()
@@ -69,7 +83,12 @@ def get_configs():
 @jwt_required()
 def del_config(dev_id):
     '''
-    TODO
+    DELETE /devices/<id>/config endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
 
     '''
     app.logger.debug(f'device id -> {dev_id}')
@@ -89,7 +108,12 @@ def del_config(dev_id):
 @jwt_required()
 def update_config(dev_id):
     '''
-    TODO
+    PUT /devices/<id>/config endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
 
     '''
     app.logger.debug(f'device id -> {dev_id}')
@@ -99,6 +123,7 @@ def update_config(dev_id):
         abort(400, 'Bad request')
 
     try:
+        # mandatory parameters
         param = request.json['param']
         val = request.json['value']
     except KeyError as key:

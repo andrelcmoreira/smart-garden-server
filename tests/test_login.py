@@ -9,8 +9,6 @@ class LoginEndpointTest(TestCase):
     TODO
     '''
 
-    # TODO: remove mocks
-
     @patch('flask_jwt_extended.create_access_token')
     def test_login_with_valid_credentials(self, create_token_mock):
         '''

@@ -9,8 +9,6 @@ class DeviceLoginEndpointTest(TestCase):
     TODO
     '''
 
-    # TODO: remove mocks
-
     @patch('flask_jwt_extended.create_access_token')
     @patch('app.storage.devices.Devices.get')
     @patch('app.storage.configs.Configs.get')

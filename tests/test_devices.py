@@ -8,7 +8,6 @@ from run import create_app
 
 class DeviceEndpointTest(TestCase):
 
-    # TODO: remove mocks
     '''
     TODO
     '''

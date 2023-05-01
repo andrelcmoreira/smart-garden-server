@@ -10,7 +10,11 @@ login_bp = Blueprint('login', __name__, url_prefix='/login')
 @login_bp.route('/', methods=['POST'])
 def login():
     '''
-    TODO
+    POST /login endpoint implementation.
+
+    :returns: On success, the access token; otherwise the suitable error reply
+              (see the API documentation for more informations).
+
     '''
     app.logger.debug(f'request payload: {request.json}')
 
@@ -18,6 +22,7 @@ def login():
         abort(400, 'Invalid user credentials')
 
     try:
+        # mandatory parameters
         user = request.json['user']
         passwd = request.json['password']
     except KeyError as key:

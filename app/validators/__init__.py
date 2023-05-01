@@ -54,6 +54,14 @@ __VALIDATORS = [
 ]
 
 def __get_validator(field):
+    """
+    Get a field validator callback.
+
+    :field: Name of the field to be validated.
+
+    :return: On success, the callback validator; otherwise None.
+
+    """
     for entry in __VALIDATORS:
         if entry['field'] == field:
             return entry
@@ -61,6 +69,15 @@ def __get_validator(field):
     return None
 
 def validate_field(field, value):
+    """
+    Validate a specific field of the user request.
+
+    :field: Name of the field to be validated.
+    :value: Value to be validated.
+
+    :return: True if the request is valid; otherwise False.
+
+    """
     validator = __get_validator(field)
 
     if not validator:
@@ -79,6 +96,14 @@ def validate_field(field, value):
     return True
 
 def validate_request(req_json):
+    """
+    Validate an user request.
+
+    :req_json: The user request in json format.
+
+    :return: True if the request is valid; otherwise False.
+
+    """
     if not req_json:
         return False
 
