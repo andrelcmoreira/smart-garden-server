@@ -7,5 +7,5 @@ class Config:
 
     """
     id: str
-    group: str = ''
     interval: str
+    group: str = ''

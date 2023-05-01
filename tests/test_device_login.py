@@ -165,7 +165,7 @@ class DeviceLoginEndpointTest(TestCase):
             dev_id = '2i74qzhd'
             serial = 'fakeserial'
             body = { "id": dev_id, "serial-number": serial }
-            expected_msg = { 'msg': 'Device not registered in database' }
+            expected_msg = { 'msg': 'Device not registered on database' }
 
             get_device_mock.return_value = {}
 
