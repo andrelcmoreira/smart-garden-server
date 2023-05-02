@@ -5,5 +5,6 @@
 - metrics
 - docker
 - monitoring
-- CI
-- update documentation
+- CI (lgtm, codecov, code style, tests, doc)
+- improve documentation
+- robot tests
