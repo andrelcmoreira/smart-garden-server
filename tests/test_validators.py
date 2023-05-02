@@ -5,7 +5,8 @@ from app.validators import validate_field
 class ValidatorsTest(TestCase):
 
     '''
-    TODO
+    Validators unit tests.
+
     '''
 
     def test_validate_field_with_valid_id(self):

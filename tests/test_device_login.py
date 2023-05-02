@@ -6,7 +6,8 @@ from run import create_app
 class DeviceLoginEndpointTest(TestCase):
 
     '''
-    TODO
+    Unit tests of /devices/<id>/login endpoint.
+
     '''
 
     @patch('flask_jwt_extended.create_access_token')

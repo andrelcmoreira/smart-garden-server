@@ -5,12 +5,16 @@ from app.storage.models.config import Config
 class ConfigTest(TestCase):
 
     '''
-    TODO
+    Unit tests of config model.
+
     '''
 
     def test_config_creation(self):
         '''
-        TODO
+        GIVEN we have a set of configuration parameters.
+        WHEN we create a new config instance with this data.
+        THEN the instance must be created with the correct parameters.
+
         '''
         cfg = Config(
             id='fake-id',

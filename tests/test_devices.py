@@ -9,7 +9,8 @@ from run import create_app
 class DeviceEndpointTest(TestCase):
 
     '''
-    TODO
+    Unit tests of /devices/<id> endpoint.
+
     '''
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')

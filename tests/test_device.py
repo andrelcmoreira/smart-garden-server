@@ -5,12 +5,16 @@ from app.storage.models.device import Device
 class DeviceTest(TestCase):
 
     '''
-    TODO
+    Unit tests of device model.
+
     '''
 
     def test_device_creation(self):
         '''
-        TODO
+        GIVEN we have a set of device parameters.
+        WHEN we create a new device instance with this data.
+        THEN the instance must be created with the correct parameters.
+
         '''
         dev = Device(
             id='fake-id',

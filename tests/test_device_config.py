@@ -8,7 +8,8 @@ from run import create_app
 class DeviceConfigEndpointTest(TestCase):
 
     '''
-    TODO
+    Unit tests of /device/<id>/config endpoint.
+
     '''
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
