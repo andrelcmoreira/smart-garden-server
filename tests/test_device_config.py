@@ -1,7 +1,7 @@
 from unittest import main, TestCase
 from unittest.mock import patch
 
-from app.storage.models.config import Config
+from storage.models.config import Config
 
 from run import create_app
 
@@ -13,7 +13,7 @@ class DeviceConfigEndpointTest(TestCase):
     '''
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get_all')
+    @patch('storage.configs.Configs.get_all')
     def test_get_configs_with_empty_db(self, get_all_mock, jwt_required_mock):
         '''
         TODO
@@ -32,7 +32,7 @@ class DeviceConfigEndpointTest(TestCase):
             get_all_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get_all')
+    @patch('storage.configs.Configs.get_all')
     def test_get_configs_with_not_empty_db(self, get_all_mock, \
                                            jwt_required_mock):
         '''
@@ -65,7 +65,7 @@ class DeviceConfigEndpointTest(TestCase):
             get_all_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.configs.Configs.get')
     def test_get_config_with_not_existent_config(self, get_mock, \
                                                  jwt_required_mock):
         '''
@@ -90,7 +90,7 @@ class DeviceConfigEndpointTest(TestCase):
             get_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.configs.Configs.get')
     def test_get_config_with_existent_config(self, get_mock, jwt_required_mock):
         '''
         TODO
@@ -116,8 +116,8 @@ class DeviceConfigEndpointTest(TestCase):
             get_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get')
-    @patch('app.storage.configs.Configs.rm')
+    @patch('storage.configs.Configs.get')
+    @patch('storage.configs.Configs.rm')
     def test_del_config_with_existent_config(self, rm_mock, get_mock, \
                                              jwt_required_mock):
         '''
@@ -146,8 +146,8 @@ class DeviceConfigEndpointTest(TestCase):
             rm_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get')
-    @patch('app.storage.configs.Configs.rm')
+    @patch('storage.configs.Configs.get')
+    @patch('storage.configs.Configs.rm')
     def test_del_config_with_not_existent_config(self, rm_mock, get_mock, \
                                                  jwt_required_mock):
         '''
@@ -173,8 +173,8 @@ class DeviceConfigEndpointTest(TestCase):
             rm_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.add')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.add')
     def test_register_config(self, add_cfg_mock, get_dev_mock, \
                              jwt_required_mock):
         '''
@@ -209,8 +209,8 @@ class DeviceConfigEndpointTest(TestCase):
             add_cfg_mock.assert_called_once_with(fake_cfg)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.add')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.add')
     def test_register_cfg_with_missing_interval(self, add_mock, get_mock, \
                                                 jwt_required_mock):
         '''
@@ -240,8 +240,8 @@ class DeviceConfigEndpointTest(TestCase):
             add_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.add')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.add')
     def test_register_device_with_missing_group(self, add_mock, get_mock, \
                                                jwt_required_mock):
         '''
@@ -276,7 +276,7 @@ class DeviceConfigEndpointTest(TestCase):
             add_mock.assert_called_once_with(fake_cfg)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.add')
+    @patch('storage.configs.Configs.add')
     def test_register_config_with_no_parameters(self, add_mock, \
                                                 jwt_required_mock):
         '''
@@ -297,8 +297,8 @@ class DeviceConfigEndpointTest(TestCase):
             add_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get')
-    @patch('app.storage.configs.Configs.update')
+    @patch('storage.configs.Configs.get')
+    @patch('storage.configs.Configs.update')
     def test_update_not_existent_config(self, update_mock, get_mock, \
                                         jwt_required_mock):
         '''
@@ -325,8 +325,8 @@ class DeviceConfigEndpointTest(TestCase):
             update_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.configs.Configs.get')
-    @patch('app.storage.configs.Configs.update')
+    @patch('storage.configs.Configs.get')
+    @patch('storage.configs.Configs.update')
     def test_update_existent_config(self, update_mock, get_mock, \
                                     jwt_required_mock):
          '''
@@ -359,7 +359,7 @@ class DeviceConfigEndpointTest(TestCase):
                  data['value']
              )
 
-    @patch('app.storage.configs.Configs.get_all')
+    @patch('storage.configs.Configs.get_all')
     def test_get_config_without_token(self, get_all_mock):
         '''
         TODO
@@ -377,7 +377,7 @@ class DeviceConfigEndpointTest(TestCase):
 
             get_all_mock.assert_not_called()
 
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.configs.Configs.get')
     def test_get_config_without_token(self, get_mock):
         '''
         TODO
@@ -395,8 +395,8 @@ class DeviceConfigEndpointTest(TestCase):
 
             get_mock.assert_not_called()
 
-    @patch('app.storage.configs.Configs.get')
-    @patch('app.storage.configs.Configs.rm')
+    @patch('storage.configs.Configs.get')
+    @patch('storage.configs.Configs.rm')
     def test_del_config_without_token(self, rm_mock, get_mock):
         '''
         TODO
@@ -415,7 +415,7 @@ class DeviceConfigEndpointTest(TestCase):
             get_mock.assert_not_called()
             rm_mock.assert_not_called()
 
-    @patch('app.storage.configs.Configs.add')
+    @patch('storage.configs.Configs.add')
     def test_register_config_without_token(self, add_mock):
         '''
         TODO
@@ -437,8 +437,8 @@ class DeviceConfigEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.configs.Configs.get')
-    @patch('app.storage.configs.Configs.update')
+    @patch('storage.configs.Configs.get')
+    @patch('storage.configs.Configs.update')
     def test_update_config_without_token(self, update_mock, get_mock):
         '''
         TODO

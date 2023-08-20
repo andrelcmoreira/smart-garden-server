@@ -11,8 +11,8 @@ class DeviceLoginEndpointTest(TestCase):
     '''
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_valid_data(self, get_config_mock, \
                                           get_device_mock, create_token_mock):
         '''
@@ -52,8 +52,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_called_once_with(identity=(dev_id, serial))
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_invalid_id(self, get_config_mock, \
                                           get_device_mock, create_token_mock):
         '''
@@ -77,8 +77,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_not_called()
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_invalid_serial(self, get_config_mock, \
                                               get_device_mock, \
                                               create_token_mock):
@@ -103,8 +103,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_not_called()
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_missing_id(self, get_config_mock, \
                                           get_device_mock, create_token_mock):
         '''
@@ -127,8 +127,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_not_called()
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_missing_serial(self, get_config_mock, \
                                               get_device_mock, \
                                               create_token_mock):
@@ -152,8 +152,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_not_called()
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_not_existent_device(self, get_config_mock, \
                                                    get_device_mock, \
                                                    create_token_mock):
@@ -180,8 +180,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_not_called()
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_wrong_serial(self, get_config_mock, \
                                             get_device_mock, create_token_mock):
         '''
@@ -213,8 +213,8 @@ class DeviceLoginEndpointTest(TestCase):
             create_token_mock.assert_not_called()
 
     @patch('flask_jwt_extended.create_access_token')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.configs.Configs.get')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.configs.Configs.get')
     def test_device_login_with_not_existent_config(self, get_config_mock, \
                                                    get_device_mock, \
                                                    create_token_mock):

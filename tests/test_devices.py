@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from flask_jwt_extended import create_access_token
 
-from app.storage.models.device import Device
+from storage.models.device import Device
 from run import create_app
 
 class DeviceEndpointTest(TestCase):
@@ -14,7 +14,7 @@ class DeviceEndpointTest(TestCase):
     '''
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get_all')
+    @patch('storage.devices.Devices.get_all')
     def test_get_devices_with_empty_db(self, get_all_mock, jwt_required_mock):
         '''
         TODO
@@ -33,7 +33,7 @@ class DeviceEndpointTest(TestCase):
             get_all_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get_all')
+    @patch('storage.devices.Devices.get_all')
     def test_get_devices_with_not_empty_db(self, get_all_mock, \
                                            jwt_required_mock):
         '''
@@ -66,7 +66,7 @@ class DeviceEndpointTest(TestCase):
             get_all_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
+    @patch('storage.devices.Devices.get')
     def test_get_device_with_not_existent_device(self, get_mock, \
                                                  jwt_required_mock):
         '''
@@ -91,7 +91,7 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
+    @patch('storage.devices.Devices.get')
     def test_get_device_with_existent_device(self, get_mock, jwt_required_mock):
         '''
         TODO
@@ -117,8 +117,8 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.rm')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.devices.Devices.rm')
     def test_del_device_with_existent_device(self, rm_mock, get_mock, \
                                              jwt_required_mock):
         '''
@@ -146,8 +146,8 @@ class DeviceEndpointTest(TestCase):
             rm_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.rm')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.devices.Devices.rm')
     def test_del_device_with_not_existent_device(self, rm_mock, get_mock, \
                                                  jwt_required_mock):
         '''
@@ -174,7 +174,7 @@ class DeviceEndpointTest(TestCase):
 
     @patch('random.sample')
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device(self, add_mock, jwt_required_mock, sample_mock):
         '''
         TODO
@@ -211,7 +211,7 @@ class DeviceEndpointTest(TestCase):
             add_mock.assert_called_once_with(fake_device)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_missing_model(self, add_mock, \
                                                 jwt_required_mock):
         '''
@@ -235,7 +235,7 @@ class DeviceEndpointTest(TestCase):
             add_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_blank_model(self, add_mock, \
                                               jwt_required_mock):
         '''
@@ -260,7 +260,7 @@ class DeviceEndpointTest(TestCase):
             add_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_missing_serial(self, add_mock, \
                                                  jwt_required_mock):
         '''
@@ -284,7 +284,7 @@ class DeviceEndpointTest(TestCase):
             add_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_blank_serial(self, add_mock, \
                                                jwt_required_mock):
         '''
@@ -310,7 +310,7 @@ class DeviceEndpointTest(TestCase):
 
     @patch('random.sample')
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_missing_desc(self, add_mock, \
                                                jwt_required_mock, sample_mock):
         '''
@@ -349,7 +349,7 @@ class DeviceEndpointTest(TestCase):
 
     @patch('random.sample')
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_blank_desc(self, add_mock, \
                                              jwt_required_mock, sample_mock):
         '''
@@ -387,7 +387,7 @@ class DeviceEndpointTest(TestCase):
             add_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_with_no_parameters(self, add_mock, \
                                                 jwt_required_mock):
         '''
@@ -407,8 +407,8 @@ class DeviceEndpointTest(TestCase):
             add_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.update')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.devices.Devices.update')
     def test_update_not_existent_device(self, update_mock, get_mock, \
                                         jwt_required_mock):
         '''
@@ -435,8 +435,8 @@ class DeviceEndpointTest(TestCase):
             update_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.update')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.devices.Devices.update')
     def test_update_existent_device(self, update_mock, get_mock, \
                                     jwt_required_mock):
          '''
@@ -468,7 +468,7 @@ class DeviceEndpointTest(TestCase):
                  data['value']
              )
 
-    @patch('app.storage.devices.Devices.get_all')
+    @patch('storage.devices.Devices.get_all')
     def test_get_devices_without_token(self, get_all_mock):
         '''
         TODO
@@ -484,7 +484,7 @@ class DeviceEndpointTest(TestCase):
 
             get_all_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.get')
+    @patch('storage.devices.Devices.get')
     def test_get_device_without_token(self, get_mock):
         '''
         TODO
@@ -502,8 +502,8 @@ class DeviceEndpointTest(TestCase):
 
             get_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.rm')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.devices.Devices.rm')
     def test_del_device_without_token(self, rm_mock, get_mock):
         '''
         TODO
@@ -522,7 +522,7 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_not_called()
             rm_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.add')
+    @patch('storage.devices.Devices.add')
     def test_register_device_without_token(self, add_mock):
         '''
         TODO
@@ -544,8 +544,8 @@ class DeviceEndpointTest(TestCase):
 
             add_mock.assert_not_called()
 
-    @patch('app.storage.devices.Devices.get')
-    @patch('app.storage.devices.Devices.update')
+    @patch('storage.devices.Devices.get')
+    @patch('storage.devices.Devices.update')
     def test_update_device_without_token(self, update_mock, get_mock):
         '''
         TODO

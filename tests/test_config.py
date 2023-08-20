@@ -1,6 +1,6 @@
 from unittest import main, TestCase
 
-from app.storage.models.config import Config
+from storage.models.config import Config
 
 class ConfigTest(TestCase):
 
