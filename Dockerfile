@@ -9,4 +9,4 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install -r /tmp/requirements.txt
 
 WORKDIR /app
-ENTRYPOINT ["python3", "run.py"]
+ENTRYPOINT ["python3", "app/run.py"]

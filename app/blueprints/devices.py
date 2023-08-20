@@ -5,8 +5,8 @@ from flask import abort, jsonify, request, Blueprint
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
-from app.storage.models.device import Device
-from app.validators import validate_request, validate_field
+from storage.models.device import Device
+from validators import validate_request, validate_field
 from . import DEVICES_DB
 
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')

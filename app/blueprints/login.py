@@ -3,7 +3,7 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
-from app.validators import validate_request
+from validators import validate_request
 
 login_bp = Blueprint('login', __name__, url_prefix='/login')
 

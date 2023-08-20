@@ -3,7 +3,7 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
-from app.validators import validate_request
+from validators import validate_request
 from . import DEVICES_DB, CONFIGS_DB
 
 device_login_bp = Blueprint('device_login', __name__, url_prefix='/devices')

@@ -7,5 +7,5 @@ Implementation of rest API for smart-garden
 ### Running the app
 
 ```bash
-$ SECRET_KEY=mysecret python run.py
+$ SECRET_KEY=mysecret python app/run.py
 ```

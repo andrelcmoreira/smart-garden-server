@@ -3,11 +3,11 @@ from os import getenv
 from flask import Flask
 from flask_jwt_extended import JWTManager
 
-from app.blueprints.devices import devices_bp
-from app.blueprints.device_config import device_cfg_bp
-from app.blueprints.device_login import device_login_bp
-from app.blueprints.login import login_bp
-from app.error.handlers import *
+from blueprints.devices import devices_bp
+from blueprints.device_config import device_cfg_bp
+from blueprints.device_login import device_login_bp
+from blueprints.login import login_bp
+from error.handlers import *
 
 def create_app():
     app = Flask(__name__)
