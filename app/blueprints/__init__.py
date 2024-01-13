@@ -1,5 +1,9 @@
-from storage.devices import Devices
-from storage.configs import Configs
+from mysql import connector
+from time import sleep
 
-DEVICES_DB = Devices()
-CONFIGS_DB = Configs()
+db = connector.connect(
+    host='smart-garden-db',
+    user='root',
+    password='test',
+    database='smart_garden'
+)
