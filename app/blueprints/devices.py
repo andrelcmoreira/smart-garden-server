@@ -70,12 +70,11 @@ def get_devices():
     devices = []
 
     with db.cursor() as cursor:
-        ret = cursor.execute('select * from devices')
-        entries = cursor.fetchall()
+        cursor.execute('select * from devices')
 
-        for entry in entries:
-            dev = Device(id=entry[0], serial=entry[1], model=entry[2],
-                         desc=entry[3])
+        ret = cursor.fetchall()
+        for i in ret:
+            dev = Device(id=i[0], serial=i[1], model=i[2], desc=i[3])
             devices.append(dev)
 
     app.logger.debug(f'found devices -> {devices}')
@@ -83,29 +82,35 @@ def get_devices():
     return jsonify(devices), 200
 
 
-#@devices_bp.route('/<string:dev_id>', methods=['GET'])
-#@jwt_required()
-#def get_device(dev_id):
-#    '''
-#    GET /devices/<id> endpoint implementation.
-#
-#    :dev_id: ID of device.
-#
-#    :returns: On success, the device information; otherwise the suitable error
-#              reply (see the API documentation for more informations).
-#
-#    '''
-#    app.logger.debug(f'device id -> {dev_id}')
-#
-#    if not validate_field('id', dev_id):
-#        abort(400, 'Bad request')
-#
-#    device = DEVICES_DB.get(dev_id)
-#    if not device:
-#        abort(404, "The device isn't registered on database")
-#
-#    return jsonify(device), 200
-#
+@devices_bp.route('/<string:dev_id>', methods=['GET'])
+@jwt_required()
+def get_device(dev_id):
+    '''
+    GET /devices/<id> endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, the device information; otherwise the suitable error
+              reply (see the API documentation for more informations).
+
+    '''
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if not validate_field('id', dev_id):
+        abort(400, 'Bad request')
+
+    with db.cursor() as cursor:
+        cursor.execute(f'select * from devices where id = {dev_id}')
+
+        ret = cursor.fetchone()
+        if not ret:
+            abort(404, "The device isn't registered on database")
+
+    dev = Device(id=ret[0], serial=ret[1], model=ret[2], desc=ret[3])
+
+    return jsonify(dev), 200
+
+
 #@devices_bp.route('/<string:dev_id>', methods=['DELETE'])
 #@jwt_required()
 #def del_device(dev_id):
