@@ -106,6 +106,8 @@ def get_device(dev_id):
         if not ret:
             abort(404, "The device isn't registered on database")
 
+    app.logger.debug(f'device data -> {ret}')
+
     dev = Device(id=ret[0], serial=ret[1], model=ret[2], desc=ret[3])
 
     return jsonify(dev), 200
