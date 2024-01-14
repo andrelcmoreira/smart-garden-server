@@ -1,5 +1,5 @@
 import random
-from string import ascii_lowercase, digits
+from string import digits
 
 from flask import abort, jsonify, request, Blueprint
 from flask import current_app as app
@@ -12,50 +12,46 @@ from . import db
 
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 
-#@devices_bp.route('/', methods=['POST'])
-#@jwt_required()
-#def register_device():
-#    '''
-#    POST /devices endpoint implementation.
-#
-#    :returns: On success, a success reply, and the device's ID; otherwise the
-#              suitable error reply (see the API documentation for more
-#              informations).
-#
-#    '''
-#    app.logger.debug(f'request payload -> {request.json}')
-#
-#    if not validate_request(request.json):
-#        abort(400, 'Bad request')
-#
-#    try:
-#        # mandatory parameters
-#        serial = request.json['serial-number']
-#        model = request.json['model']
-#    except KeyError as key:
-#        app.logger.debug(f'missing {key} in request')
-#        abort(400, 'Missing required data')
-#
-#    dev_id = ''.join(random.sample(ascii_lowercase + digits, 8))
-#    if not dev_id:
-#        app.logger.debug('empty device id')
-#        abort(500, 'Failed to register the device into the database')
+@devices_bp.route('/', methods=['POST'])
+@jwt_required()
+def register_device():
+    '''
+    POST /devices endpoint implementation.
 
-    # TODO: verify if the ID is already in use by other device
-#    dev = Device(
-#        id=dev_id,
-#        serial=serial,
-#        model=model,
-#        desc=request.json.get('description')
-#    )
-#    DEVICES_DB.add(dev)
-#
-#    return jsonify(
-#        {
-#            'msg': 'Device registered with success',
-#            'id': dev_id
-#        }
-#    ), 201
+    :returns: On success, a success reply, and the device's ID; otherwise the
+              suitable error reply (see the API documentation for more
+              informations).
+
+    '''
+    app.logger.debug(f'request payload -> {request.json}')
+
+    if not validate_request(request.json):
+        abort(400, 'Bad request')
+
+    try:
+        # mandatory parameters
+        serial = request.json['serial-number']
+        model = request.json['model']
+    except KeyError as key:
+        app.logger.debug(f'missing {key} in request')
+        abort(400, 'Missing required data')
+
+    dev_id = ''.join(random.sample(digits, 4))
+    if not dev_id:
+        app.logger.debug('empty device id')
+        abort(500, 'Failed to register the device into the database')
+
+    with db.cursor() as cursor:
+        cursor.execute(f'insert into devices(id, serial, model, description) \
+                        values ("{dev_id}", "{serial}", "{model}", "")')
+        db.commit()
+
+    return jsonify(
+        {
+            'msg': 'Device registered with success',
+            'id': dev_id
+        }
+    ), 201
 
 
 @devices_bp.route('/', methods=['GET'])
