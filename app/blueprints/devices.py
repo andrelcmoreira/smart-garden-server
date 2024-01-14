@@ -1,6 +1,3 @@
-import random
-from string import digits
-
 from flask import abort, jsonify, request, Blueprint
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
@@ -36,20 +33,21 @@ def register_device():
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    dev_id = ''.join(random.sample(digits, 4))
-    if not dev_id:
-        app.logger.debug('empty device id')
-        abort(500, 'Failed to register the device into the database')
+    desc = request.json['description']
 
     with db.cursor() as cursor:
-        cursor.execute(f'insert into devices(id, serial, model, description) \
-                        values ("{dev_id}", "{serial}", "{model}", "")')
+        cursor.execute(f'insert into devices(serial, model, description) \
+                        values ("{serial}", "{model}", "{desc}")')
         db.commit()
+
+        # get the device ID
+        cursor.execute('select max(id) from devices') # TODO: improve this
+        ret = cursor.fetchone()
 
     return jsonify(
         {
             'msg': 'Device registered with success',
-            'id': dev_id
+            'id': ret[0]
         }
     ), 201
 
