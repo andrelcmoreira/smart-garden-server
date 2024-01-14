@@ -7,7 +7,9 @@ from validators import validate_request, validate_field
 
 from . import db
 
+
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
+
 
 @devices_bp.route('/', methods=['POST'])
 @jwt_required()
@@ -107,31 +109,37 @@ def get_device(dev_id):
     return jsonify(dev), 200
 
 
-#@devices_bp.route('/<string:dev_id>', methods=['DELETE'])
-#@jwt_required()
-#def del_device(dev_id):
-#    '''
-#    DELETE /devices/<id> endpoint implementation.
-#
-#    :dev_id: ID of device.
-#
-#    :returns: On success, a success reply; otherwise the suitable error reply
-#              (see the API documentation for more informations).
-#
-#    '''
-#    app.logger.debug(f'device id -> {dev_id}')
-#
-#    if not validate_field('id', dev_id):
-#        abort(400, 'Bad request')
-#
-#    if not DEVICES_DB.get(dev_id):
-#        app.logger.debug(f'device {dev_id} not found')
-#        abort(404, "The device isn't registered on database")
-#
-#    DEVICES_DB.rm(dev_id)
-#
-#    return jsonify({ 'msg': 'Device unregistered from database' }), 200
-#
+@devices_bp.route('/<string:dev_id>', methods=['DELETE'])
+@jwt_required()
+def del_device(dev_id):
+    '''
+    DELETE /devices/<id> endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
+
+    '''
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if not validate_field('id', dev_id):
+        abort(400, 'Bad request')
+
+    with db.cursor() as cursor:
+        cursor.execute(f'select id from devices where id = {dev_id}')
+
+        ret = cursor.fetchone()
+        if not ret:
+            app.logger.debug(f'device {dev_id} not found')
+            abort(404, "The device isn't registered on database")
+
+        cursor.execute(f'delete from devices where id = {dev_id}')
+        db.commit()
+
+    return jsonify({ 'msg': 'Device unregistered from database' }), 200
+
+
 #@devices_bp.route('/<string:dev_id>', methods=['PUT'])
 #@jwt_required()
 #def update_device(dev_id):
