@@ -85,20 +85,31 @@ def get_config(dev_id):
     return jsonify(cfg), 200
 
 
-#@device_cfg_bp.route('/config/', methods=['GET'])
-#@jwt_required()
-#def get_configs():
-#    '''
-#    GET /devices/config endpoint implementation.
-#
-#    :returns: On success, all the device configurations; otherwise an empty
-#              reply.
-#
-#    '''
-#    configs = CONFIGS_DB.get_all()
-#
-#    return jsonify(configs), 200
-#
+@device_cfg_bp.route('/config/', methods=['GET'])
+@jwt_required()
+def get_configs():
+    '''
+    GET /devices/config endpoint implementation.
+
+    :returns: On success, all the device configurations; otherwise an empty
+              reply.
+
+    '''
+    cfgs = []
+
+    with db.cursor() as cursor:
+        cursor.execute(f'select * from configs')
+
+        ret = cursor.fetchall()
+        for entry in ret:
+            app.logger.debug(f'found config -> {entry}')
+
+            cfg = Config(entry[0], entry[3], entry[2])
+            cfgs.append(cfg)
+
+    return jsonify(cfgs), 200
+
+
 #@device_cfg_bp.route('/<string:dev_id>/config/', methods=['DELETE'])
 #@jwt_required()
 #def del_config(dev_id):
