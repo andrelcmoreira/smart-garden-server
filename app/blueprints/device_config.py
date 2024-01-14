@@ -110,31 +110,39 @@ def get_configs():
     return jsonify(cfgs), 200
 
 
-#@device_cfg_bp.route('/<string:dev_id>/config/', methods=['DELETE'])
-#@jwt_required()
-#def del_config(dev_id):
-#    '''
-#    DELETE /devices/<id>/config endpoint implementation.
-#
-#    :dev_id: ID of device.
-#
-#    :returns: On success, a success reply; otherwise the suitable error reply
-#              (see the API documentation for more informations).
-#
-#    '''
-#    app.logger.debug(f'device id -> {dev_id}')
-#
-#    if not validate_field('id', dev_id):
-#        abort(400, 'Bad request')
-#
-#    if not CONFIGS_DB.get(dev_id):
-#        app.logger.debug(f'config for device {dev_id} not found')
-#        abort(404, "There's no config for the specific device")
-#
-#    CONFIGS_DB.rm(dev_id)
-#
-#    return jsonify({ 'msg': 'Config deleted from database' }), 200
-#
+@device_cfg_bp.route('/<string:dev_id>/config/', methods=['DELETE'])
+@jwt_required()
+def del_config(dev_id):
+    '''
+    DELETE /devices/<id>/config endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
+
+    '''
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if not validate_field('id', dev_id):
+        abort(400, 'Bad request')
+
+    with db.cursor() as cursor:
+        cursor.execute(f'select * from configs where dev_id = {dev_id}')
+
+        ret = cursor.fetchone()
+        if not ret:
+            app.logger.debug(f'device {dev_id} has no config')
+            abort(404, "The device has no configuration")
+
+        app.logger.debug(f'found device -> {ret}')
+
+        cursor.execute(f'delete from configs where dev_id = {dev_id}')
+        db.commit()
+
+    return jsonify({ 'msg': 'Config deleted from database' }), 200
+
+
 #@device_cfg_bp.route('/<string:dev_id>/config/', methods=['PUT'])
 #@jwt_required()
 #def update_config(dev_id):
