@@ -7,7 +7,6 @@ from validators import validate_request, validate_field
 
 from . import db
 
-
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 
 
@@ -35,7 +34,7 @@ def register_device():
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    desc = request.json['description']
+    desc = request.json.get('description') # optional
 
     with db.cursor() as cursor:
         cursor.execute(f'insert into devices(serial, model, description) \
