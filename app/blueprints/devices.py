@@ -39,7 +39,7 @@ def register_device():
 
     with db.cursor() as cursor:
         cursor.execute(f'insert into devices(serial, model, description) \
-                        values ("{serial}", "{model}", "{desc}")')
+                       values ("{serial}", "{model}", "{desc}")')
         db.commit()
 
         # get the device ID
@@ -127,12 +127,14 @@ def del_device(dev_id):
         abort(400, 'Bad request')
 
     with db.cursor() as cursor:
-        cursor.execute(f'select id from devices where id = {dev_id}')
+        cursor.execute(f'select * from devices where id = {dev_id}')
 
         ret = cursor.fetchone()
         if not ret:
             app.logger.debug(f'device {dev_id} not found')
             abort(404, "The device isn't registered on database")
+
+        app.logger.debug(f'found device -> {ret}')
 
         cursor.execute(f'delete from devices where id = {dev_id}')
         db.commit()
@@ -140,36 +142,44 @@ def del_device(dev_id):
     return jsonify({ 'msg': 'Device unregistered from database' }), 200
 
 
-#@devices_bp.route('/<string:dev_id>', methods=['PUT'])
-#@jwt_required()
-#def update_device(dev_id):
-#    '''
-#    PUT /devices/<id> endpoint implementation.
-#
-#    :dev_id: ID of device.
-#
-#    :returns: On success, a success reply; otherwise the suitable error reply
-#              (see the API documentation for more informations).
-#
-#    '''
-#    app.logger.debug(f'device id -> {dev_id}')
-#
-#    if (not validate_field('id', dev_id)) or \
-#        (not validate_request(request.json)):
-#        abort(400, 'Bad request')
-#
-#    try:
-#        # mandatory parameters
-#        param = request.json['param']
-#        val = request.json['value']
-#    except KeyError as key:
-#        app.logger.debug(f'missing {key} in request')
-#        abort(400, 'Missing required data')
-#
-#    if not DEVICES_DB.get(dev_id):
-#        app.logger.debug(f'device {dev_id} not found')
-#        abort(404, "The device isn't registered on database")
-#
-#    DEVICES_DB.update(dev_id, param, val)
-#
-#    return jsonify({ 'msg': 'Device updated in database' }), 200
+@devices_bp.route('/<string:dev_id>', methods=['PUT'])
+@jwt_required()
+def update_device(dev_id):
+    '''
+    PUT /devices/<id> endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, a success reply; otherwise the suitable error reply
+              (see the API documentation for more informations).
+
+    '''
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if (not validate_field('id', dev_id)) or \
+        (not validate_request(request.json)):
+        abort(400, 'Bad request')
+
+    try:
+        # mandatory parameters
+        param = request.json['param']
+        val = request.json['value']
+    except KeyError as key:
+        app.logger.debug(f'missing {key} in request')
+        abort(400, 'Missing required data')
+
+    with db.cursor() as cursor:
+        cursor.execute(f'select * from devices where id = {dev_id}')
+
+        ret = cursor.fetchone()
+        if not ret:
+            app.logger.debug(f'device {dev_id} not found')
+            abort(404, "The device isn't registered on database")
+
+        app.logger.debug(f'found device -> {ret}')
+
+        cursor.execute(f'update devices set {param} = "{val}" \
+                       where id = {dev_id}')
+        db.commit()
+
+    return jsonify({ 'msg': 'Device updated in database' }), 200
