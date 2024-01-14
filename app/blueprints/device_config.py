@@ -55,27 +55,36 @@ def config_device(dev_id):
     return jsonify({ 'msg': 'Configuration registered with success' }), 201
 
 
-#@device_cfg_bp.route('/<string:dev_id>/config/', methods=['GET'])
-#@jwt_required()
-#def get_config(dev_id):
-#    '''
-#    GET /devices/<id>/config endpoint implementation.
-#
-#    :dev_id: ID of device.
-#
-#    :returns: On success, the device configuration; otherwise the suitable error
-#              reply (see the API documentation for more informations).
-#
-#    '''
-#    if (not validate_field('id', dev_id)):
-#        abort(400, 'Bad request')
-#
-#    cfg = CONFIGS_DB.get(dev_id)
-#    if not cfg:
-#        abort(404, "The config isn't registered on database")
-#
-#    return jsonify(cfg), 200
-#
+@device_cfg_bp.route('/<string:dev_id>/config/', methods=['GET'])
+@jwt_required()
+def get_config(dev_id):
+    '''
+    GET /devices/<id>/config endpoint implementation.
+
+    :dev_id: ID of device.
+
+    :returns: On success, the device configuration; otherwise the suitable error
+              reply (see the API documentation for more informations).
+
+    '''
+    if (not validate_field('id', dev_id)):
+        abort(400, 'Bad request')
+
+    with db.cursor() as cursor:
+        cursor.execute(f'select * from configs where dev_id = {dev_id}')
+
+        ret = cursor.fetchone()
+        if not ret:
+            app.logger.debug(f'device {dev_id} has no config')
+            abort(404, "The device has no configuration")
+
+        app.logger.debug(f'found device -> {ret}')
+
+    cfg = Config(id=ret[0], interval=ret[2], group=ret[3])
+
+    return jsonify(cfg), 200
+
+
 #@device_cfg_bp.route('/config/', methods=['GET'])
 #@jwt_required()
 #def get_configs():
