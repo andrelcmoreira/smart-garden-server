@@ -7,5 +7,5 @@ Implementation of rest API for smart-garden
 ### Running the app
 
 ```bash
-$ SECRET_KEY=mysecret python app/run.py
+$ SECRET_KEY=<secret_key> MYSQL_ROOT_PASSWORD=<root_passwd> docker-compose up
 ```
