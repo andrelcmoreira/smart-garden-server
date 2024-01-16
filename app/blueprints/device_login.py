@@ -3,10 +3,12 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
+from storage.models.config import Config
 from validators import validate_request
-from . import DEVICES_DB, CONFIGS_DB
+from . import db
 
 device_login_bp = Blueprint('device_login', __name__, url_prefix='/devices')
+
 
 @device_login_bp.route('/login/', methods=['POST'])
 def login_device():
@@ -31,23 +33,33 @@ def login_device():
         app.logger.debug(f"missing '{key}' in request")
         abort(400, 'Missing required data')
 
-    dev = DEVICES_DB.get(dev_id)
-    if not dev:
-        app.logger.debug(f"device '{dev_id}' not found on database")
-        abort(404, 'Device not registered on database')
+    with db.cursor() as cursor:
+        cursor.execute(f'select * from devices where id = {dev_id}')
 
-    if dev['serial'] != serial:
-        app.logger.debug(
-            f"incorrect serial number '{serial}' for device '{dev_id}'"
-        )
-        abort(401, 'Authentication failed')
+        ret = cursor.fetchone()
+        if not ret:
+            app.logger.debug(f'device {dev_id} not found')
+            abort(404, "The device isn't registered on database")
 
-    cfg = CONFIGS_DB.get(dev_id)
-    if not cfg:
-        app.logger.debug(f"no config for '{dev_id}'")
-        abort(404, "There's no config for the specified device")
+        app.logger.debug(f'found device -> {ret}')
+
+        if ret[1] != serial:
+            app.logger.debug(
+                f"incorrect serial number '{serial}' for device '{dev_id}'"
+            )
+            abort(401, 'Authentication failed')
+
+        cursor.execute(f'select * from configs where dev_id = {dev_id}')
+
+        ret = cursor.fetchone()
+        if not ret:
+            app.logger.debug(f'device {dev_id} has no config')
+            abort(404, "There's no config for the specific device")
+
+        app.logger.debug(f'found config -> {ret}')
 
     token = flask_jwt_extended.create_access_token(identity=(dev_id, serial))
+    cfg = Config(id=ret[1], interval=ret[3], group=ret[2])
 
     return jsonify(
         {
