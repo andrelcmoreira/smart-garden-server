@@ -22,6 +22,8 @@ services:
     build:
       args:
         SECRET_KEY: ${SECRET_KEY}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
       - '5000:5000'
     volumes:
