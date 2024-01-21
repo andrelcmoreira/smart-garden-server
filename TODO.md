@@ -7,4 +7,3 @@
 - improve documentation
 - robot tests
 - security issues
-- automate the database creation
