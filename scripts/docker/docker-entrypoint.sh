@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo ' * Waiting db...'
-while ! python scripts/db/wait_db.py 2> /dev/null ; do
+while ! python wait_db_container.py 2> /dev/null ; do
   sleep 2
 done
 
