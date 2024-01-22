@@ -14,4 +14,4 @@ RUN pip3 install -r /tmp/requirements.txt
 
 WORKDIR /app
 
-ENTRYPOINT ["/bin/sh", "scripts/docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "scripts/docker/docker-entrypoint.sh"]
