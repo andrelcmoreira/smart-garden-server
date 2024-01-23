@@ -2,7 +2,7 @@ from flask import abort, jsonify, request, Blueprint
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
-from storage.models.device import Device
+from models.device import Device
 from validators import validate_request, validate_field
 
 from . import db

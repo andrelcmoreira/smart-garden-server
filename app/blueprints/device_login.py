@@ -3,7 +3,7 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
-from storage.models.config import Config
+from models.config import Config
 from validators import validate_request
 from . import db
 
