@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required
 from models.device import Device
 from validators import validate_request, validate_field
 
-from . import db
 
 devices_bp = Blueprint('devices', __name__, url_prefix='/devices')
 
@@ -36,10 +35,10 @@ def register_device():
 
     desc = request.json.get('description') # optional
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'insert into devices(serial, model, description) \
                        values ("{serial}", "{model}", "{desc}")')
-        db.commit()
+        app.db.commit()
 
         # get the device ID
         cursor.execute('select max(id) from devices') # TODO: improve this
@@ -64,7 +63,7 @@ def get_devices():
     '''
     devices = []
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute('select * from devices')
 
         ret = cursor.fetchall()
@@ -94,7 +93,7 @@ def get_device(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from devices where id = {dev_id}')
 
         ret = cursor.fetchone()
@@ -125,7 +124,7 @@ def del_device(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from devices where id = {dev_id}')
 
         ret = cursor.fetchone()
@@ -136,7 +135,7 @@ def del_device(dev_id):
         app.logger.debug(f'found device -> {ret}')
 
         cursor.execute(f'delete from devices where id = {dev_id}')
-        db.commit()
+        app.db.commit()
 
     return jsonify({ 'msg': 'Device unregistered from database' }), 200
 
@@ -167,7 +166,7 @@ def update_device(dev_id):
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from devices where id = {dev_id}')
 
         ret = cursor.fetchone()
@@ -179,6 +178,6 @@ def update_device(dev_id):
 
         cursor.execute(f'update devices set {param} = "{val}" \
                        where id = {dev_id}')
-        db.commit()
+        app.db.commit()
 
     return jsonify({ 'msg': 'Device updated in database' }), 200

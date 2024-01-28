@@ -5,7 +5,6 @@ from flask_jwt_extended import jwt_required
 from models.config import Config
 from validators import validate_request, validate_field
 
-from . import db
 
 device_cfg_bp = Blueprint('device_config', __name__, url_prefix='/devices')
 
@@ -38,7 +37,7 @@ def config_device(dev_id):
 
     group = request.json.get('group') # optional
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from devices where id = {dev_id}')
 
         ret = cursor.fetchone()
@@ -70,7 +69,7 @@ def get_config(dev_id):
     if (not validate_field('id', dev_id)):
         abort(400, 'Bad request')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from configs where dev_id = {dev_id}')
 
         ret = cursor.fetchone()
@@ -97,7 +96,7 @@ def get_configs():
     '''
     cfgs = []
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from configs')
 
         ret = cursor.fetchall()
@@ -127,7 +126,7 @@ def del_config(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from configs where dev_id = {dev_id}')
 
         ret = cursor.fetchone()
@@ -169,7 +168,7 @@ def update_config(dev_id):
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from configs where dev_id = {dev_id}')
 
         ret = cursor.fetchone()

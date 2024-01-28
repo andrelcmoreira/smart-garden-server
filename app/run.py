@@ -2,6 +2,7 @@ from os import getenv
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from mysql import connector
 
 from blueprints.devices import devices_bp
 from blueprints.device_config import device_cfg_bp
@@ -27,6 +28,14 @@ def create_app():
     app.register_error_handler(401, unauthorized_error)
     app.register_error_handler(404, resource_not_found)
     app.register_error_handler(500, internal_error)
+
+    # TODO: replace the data below by environment variables
+    app.db = connector.connect(
+        host='smart-garden-db',
+        user='root',
+        password=getenv('MYSQL_ROOT_PASSWORD'),
+        database='smart_garden'
+    )
 
     return app
 

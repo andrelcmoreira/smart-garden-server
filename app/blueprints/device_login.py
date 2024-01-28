@@ -5,7 +5,7 @@ import flask_jwt_extended
 
 from models.config import Config
 from validators import validate_request
-from . import db
+
 
 device_login_bp = Blueprint('device_login', __name__, url_prefix='/devices')
 
@@ -33,7 +33,7 @@ def login_device():
         app.logger.debug(f"missing '{key}' in request")
         abort(400, 'Missing required data')
 
-    with db.cursor() as cursor:
+    with app.db.cursor() as cursor:
         cursor.execute(f'select * from devices where id = {dev_id}')
 
         ret = cursor.fetchone()
