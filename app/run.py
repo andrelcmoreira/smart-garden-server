@@ -29,12 +29,11 @@ def create_app():
     app.register_error_handler(404, resource_not_found)
     app.register_error_handler(500, internal_error)
 
-    # TODO: replace the data below by environment variables
     app.db = connector.connect(
-        host='smart-garden-db',
-        user='root',
+        host=getenv('MYSQL_DB_HOSTNAME'),
+        user=getenv('MYSQL_USER'),
         password=getenv('MYSQL_ROOT_PASSWORD'),
-        database='smart_garden'
+        database=getenv('MYSQL_DATABASE_NAME')
     )
 
     return app

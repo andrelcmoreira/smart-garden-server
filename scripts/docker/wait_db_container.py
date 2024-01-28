@@ -5,8 +5,8 @@ from sys import exit
 
 def main():
     try:
-        db = conn.connect(host="smart-garden-db",
-                          user="root",
+        db = conn.connect(host=getenv('MYSQL_DB_HOSTNAME'),
+                          user=getenv('MYSQL_USER'),
                           password=getenv('MYSQL_ROOT_PASSWORD'))
         db.close()
     except conn.errors.DatabaseError:

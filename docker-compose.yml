@@ -24,7 +24,10 @@ services:
       args:
         SECRET_KEY: ${SECRET_KEY}
     environment:
+      - MYSQL_USER=${MYSQL_USER}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE_NAME=${MYSQL_DATABASE_NAME}
+      - MYSQL_DB_HOSTNAME=${MYSQL_DB_HOSTNAME}
       - ENV_TYPE=${ENV_TYPE}
     ports:
       - '5000:5000'
