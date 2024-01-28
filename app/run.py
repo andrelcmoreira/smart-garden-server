@@ -2,12 +2,12 @@ from os import getenv
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
-from mysql import connector
 
 from blueprints.devices import devices_bp
 from blueprints.device_config import device_cfg_bp
 from blueprints.device_login import device_login_bp
 from blueprints.login import login_bp
+from db.handler import init_db
 from error.handlers import *
 
 
@@ -29,12 +29,7 @@ def create_app():
     app.register_error_handler(404, resource_not_found)
     app.register_error_handler(500, internal_error)
 
-    app.db = connector.connect(
-        host=getenv('MYSQL_DB_HOSTNAME'),
-        user=getenv('MYSQL_USER'),
-        password=getenv('MYSQL_ROOT_PASSWORD'),
-        database=getenv('MYSQL_DATABASE_NAME')
-    )
+    init_db(app)
 
     return app
 
