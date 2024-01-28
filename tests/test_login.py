@@ -14,12 +14,14 @@ class LoginEndpointTest(TestCase):
     @patch('flask_jwt_extended.create_access_token')
     def test_login_with_valid_credentials(self, create_token_mock, db_mock):
         '''
-        TODO
+        GIVEN we have valid credentials
+        WHEN  we try to authenticate within the server
+        THEN  a token must be returned
         '''
         app = create_app()
 
         with app.test_client() as cli:
-            body = { "user": "fake_user", "password": "fake_pass" }
+            body = { 'user': 'fake_user', 'password': 'fake_pass' }
             token = 'fake-token'
             expected_msg = { 'token': token }
 
@@ -38,12 +40,14 @@ class LoginEndpointTest(TestCase):
     @patch('flask_jwt_extended.create_access_token')
     def test_login_with_no_user(self, create_token_mock, db_mock):
         '''
-        TODO
+        GIVEN we have no valid user
+        WHEN  we try to authenticate within the server
+        THEN  the suitable error must be returned
         '''
         app = create_app()
 
         with app.test_client() as cli:
-            body = { "password": "fake_admin" }
+            body = { 'password': 'fake_admin' }
             expected_msg = { 'msg': 'Missing required data' }
 
             ret = cli.post('/login/', json=body)
@@ -57,12 +61,14 @@ class LoginEndpointTest(TestCase):
     @patch('flask_jwt_extended.create_access_token')
     def test_login_with_no_password(self, create_token_mock, db_mock):
         '''
-        TODO
+        GIVEN we have no valid password
+        WHEN  we try to authenticate within the server
+        THEN  the suitable error must be returned
         '''
         app = create_app()
 
         with app.test_client() as cli:
-            body = { "user": "fake_admin" }
+            body = { 'user': 'fake_admin' }
             expected_msg = { 'msg': 'Missing required data' }
 
             ret = cli.post('/login/', json=body)
@@ -72,5 +78,5 @@ class LoginEndpointTest(TestCase):
 
             create_token_mock.assert_not_called()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

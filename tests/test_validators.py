@@ -11,7 +11,9 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_valid_id(self):
         '''
-        TODO
+        GIVEN we have a valid ID
+        WHEN  we validate it
+        THEN  true must be returned
         '''
         value = '1234efgh'
 
@@ -19,7 +21,9 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_invalid_id(self):
         '''
-        TODO
+        GIVEN we have an invalid ID
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         value = 'ABCDE123@!_'
 
@@ -27,14 +31,18 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_blank_id(self):
         '''
-        TODO
+        GIVEN we have a blank ID
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         self.assertFalse(validate_field('id', ''))
 
 
     def test_validate_field_with_valid_user(self):
         '''
-        TODO
+        GIVEN we have a valid user
+        WHEN  we validate it
+        THEN  true must be returned
         '''
         user_name = 'admin'
 
@@ -42,13 +50,17 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_blank_user(self):
         '''
-        TODO
+        GIVEN we have a blank user
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         self.assertFalse(validate_field('user', ''))
 
     def test_validate_field_with_invalid_user(self):
         '''
-        TODO
+        GIVEN we have an invalid user
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         user_name = '@dm1n_1234!'
 
@@ -56,7 +68,9 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_valid_pass(self):
         '''
-        TODO
+        GIVEN we have a valid pass
+        WHEN  we validate it
+        THEN  true must be returned
         '''
         password = '_P@$$sw0rd!'
 
@@ -64,13 +78,17 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_blank_pass(self):
         '''
-        TODO
+        GIVEN we have a blank pass
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         self.assertFalse(validate_field('password', ''))
 
     def test_validate_field_with_invalid_pass(self):
         '''
-        TODO
+        GIVEN we have an invalid pass
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         password = '   _p@$$_'
 
@@ -78,7 +96,9 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_valid_serial(self):
         '''
-        TODO
+        GIVEN we have a valid serial
+        WHEN  we validate it
+        THEN  true must be returned
         '''
         serial = 'ABCDE-12345'
 
@@ -86,13 +106,17 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_blank_serial(self):
         '''
-        TODO
+        GIVEN we have a blank serial
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         self.assertFalse(validate_field('serial-number', ''))
 
     def test_validate_field_with_invalid_serial(self):
         '''
-        TODO
+        GIVEN we have an invalid serial
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         serial = '@bcd_!2345'
 
@@ -100,7 +124,9 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_valid_model(self):
         '''
-        TODO
+        GIVEN we have a valid model
+        WHEN  we validate it
+        THEN  true must be returned
         '''
         model = 'VALID_MODEL'
 
@@ -108,13 +134,17 @@ class ValidatorsTest(TestCase):
 
     def test_validate_field_with_blank_model(self):
         '''
-        TODO
+        GIVEN we have a blank model
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         self.assertFalse(validate_field('model', ''))
 
     def test_validate_field_with_invalid_model(self):
         '''
-        TODO
+        GIVEN we have an invalid model
+        WHEN  we validate it
+        THEN  false must be returned
         '''
         model = '@#$MODEL'
 
