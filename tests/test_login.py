@@ -10,8 +10,9 @@ class LoginEndpointTest(TestCase):
 
     '''
 
+    @patch('mysql.connector.connect')
     @patch('flask_jwt_extended.create_access_token')
-    def test_login_with_valid_credentials(self, create_token_mock):
+    def test_login_with_valid_credentials(self, create_token_mock, db_mock):
         '''
         TODO
         '''
@@ -33,8 +34,9 @@ class LoginEndpointTest(TestCase):
                 identity=(body['user'], body['password'])
             )
 
+    @patch('mysql.connector.connect')
     @patch('flask_jwt_extended.create_access_token')
-    def test_login_with_no_user(self, create_token_mock):
+    def test_login_with_no_user(self, create_token_mock, db_mock):
         '''
         TODO
         '''
@@ -51,8 +53,9 @@ class LoginEndpointTest(TestCase):
 
             create_token_mock.assert_not_called()
 
+    @patch('mysql.connector.connect')
     @patch('flask_jwt_extended.create_access_token')
-    def test_login_with_no_password(self, create_token_mock):
+    def test_login_with_no_password(self, create_token_mock, db_mock):
         '''
         TODO
         '''
