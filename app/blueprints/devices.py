@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
 from models.entities.device import Device
-from models.device_handler import *
+from models.device_handler import DeviceHandler
 from validators import validate_request, validate_field
 
 
@@ -37,7 +37,7 @@ def register_device():
     desc = request.json.get('description') # optional
 
     dev_data = Device(serial=serial, model=model, desc=desc)
-    reg_id = add_device(dev_data)
+    reg_id = DeviceHandler.add(dev_data)
 
     return jsonify(
         {
@@ -56,7 +56,7 @@ def get_devices():
     :returns: On success, all registered devices; otherwise an empty reply.
 
     '''
-    devices = get_all_devices()
+    devices = DeviceHandler.get_all()
 
     app.logger.debug(f'found devices -> {devices}')
 
@@ -80,11 +80,12 @@ def get_device(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    dev = get_device_with_id(dev_id)
+    dev = DeviceHandler.get(dev_id)
     if not dev:
+        app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
 
-    app.logger.debug(f'device data -> {ret}')
+    app.logger.debug(f'device data -> {dev}')
 
     return jsonify(dev), 200
 
@@ -106,13 +107,13 @@ def del_device(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    if not device_exists(dev_id):
+    if not DeviceHandler.get(dev_id):
         app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
 
     app.logger.debug(f'found device with id {dev_id}')
 
-    rm_device_with_id(dev_id)
+    DeviceHandler.delete(dev_id)
 
     return jsonify({ 'msg': 'Device unregistered from database' }), 200
 
@@ -143,12 +144,12 @@ def update_device(dev_id):
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    if not device_exists(dev_id):
+    if not DeviceHandler.get(dev_id):
         app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
 
     app.logger.debug(f'found device with id {dev_id}')
 
-    update_device_with_id(dev_id, param, value)
+    DeviceHandler.update(dev_id, param, val)
 
     return jsonify({ 'msg': 'Device updated in database' }), 200

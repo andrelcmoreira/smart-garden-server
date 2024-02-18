@@ -1,11 +1,12 @@
-from models.table_handler import TableHandler
+from abc import ABC, abstractmethod
 
 
-class ConfigHandler(TableHandler):
+class TableHandler:
 
-    """Docstring for ConfigHandler. """
+    """Docstring for TableHandler. """
 
-    def insert(self, entry):
+    @abstractmethod
+    def insert(entry):
         """TODO: Docstring for insert.
 
         :entry: TODO
@@ -14,7 +15,8 @@ class ConfigHandler(TableHandler):
         """
         pass
 
-    def delete(self, entry_id):
+    @abstractmethod
+    def delete(entry_id):
         """TODO: Docstring for delete.
 
         :entry_id: TODO
@@ -23,7 +25,9 @@ class ConfigHandler(TableHandler):
         """
         pass
 
-    def update(self, entry_id, key, value):
+    @staticmethod
+    @abstractmethod
+    def update(entry_id, key, value):
         """TODO: Docstring for update.
 
         :entry_id: TODO
@@ -34,14 +38,18 @@ class ConfigHandler(TableHandler):
         """
         pass
 
-    def get_all(self):
+    @staticmethod
+    @abstractmethod
+    def get_all():
         """TODO: Docstring for get_all.
         :returns: TODO
 
         """
         pass
 
-    def get(self, entry_id):
+    @staticmethod
+    @abstractmethod
+    def get(entry_id):
         """TODO: Docstring for get.
 
         :entry_id: TODO

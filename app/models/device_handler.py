@@ -1,70 +1,70 @@
+from models.database_mgr import DatabaseMgr
 from models.entities.device import Device
+from models.table_handler import TableHandler
 
 
-def add_device(data):
-    with db.cursor() as cursor:
-        cursor.execute(f'insert into devices(serial, model, description) \
-                       values ("{data.serial}", "{data.model}", "{data.desc}")')
-        db.commit()
+class DeviceHandler(TableHandler):
 
-        # get the device ID
-        cursor.execute('select max(id) from devices') # TODO: improve this
-        return cursor.fetchone()
+    """Docstring for DeviceHandler. """
 
+    @staticmethod
+    def insert(entry):
+        db = DatabaseMgr.get_db()
 
-def rm_device_with_id(dev_id):
-    #with app.db.cursor() as cursor:
-    #    cursor.execute(f'select * from devices where id = {dev_id}')
+        with db.cursor() as c:
+            c.execute(f'''
+                      insert into devices(serial, model, description)
+                      values ("{entry.serial}", "{entry.model}", "{entry.desc}")
+                      ''')
+            db.commit()
 
-    #    ret = cursor.fetchone()
-    #    if not ret:
-    #        app.logger.debug(f'device {dev_id} not found')
-    #        abort(404, "The device isn't registered on database")
+            # get the device ID
+            c.execute('select max(id) from devices') # TODO: improve this
+            return c.fetchone()
 
-    #    app.logger.debug(f'found device -> {ret}')
+    @staticmethod
+    def delete(entry_id):
+        db = DatabaseMgr.get_db()
 
-    #    cursor.execute(f'delete from devices where id = {dev_id}')
-    #    app.db.commit()
+        with db.cursor() as cursor:
+            cursor.execute(f'delete from devices where id = {entry_id}')
+            db.commit()
 
+    @staticmethod
+    def update(entry_id, key, value):
+        db = DatabaseMgr.get_db()
 
-def update_device(data):
-#    with app.db.cursor() as cursor:
-#        cursor.execute(f'select * from devices where id = {dev_id}')
-#
-#        ret = cursor.fetchone()
-#        if not ret:
-#            app.logger.debug(f'device {dev_id} not found')
-#            abort(404, "The device isn't registered on database")
-#
-#        app.logger.debug(f'found device -> {ret}')
-#
-#        cursor.execute(f'update devices set {param} = "{val}" \
-#                       where id = {dev_id}')
-#        app.db.commit()
-#
-    pass
+        with db.cursor() as cursor:
+            cursor.execute(f'''
+                           update devices set {key} = "{value}"
+                           where id = {entry_id}
+                           ''')
+            db.commit()
 
+    @staticmethod
+    def get_all():
+        db = DatabaseMgr.get_db()
+        devices = []
 
-def get_device_with_id(dev_id):
-    with db.cursor() as cursor:
-        cursor.execute(f'select * from devices where id = {dev_id}')
+        with db.cursor() as cursor:
+            cursor.execute('select * from devices')
 
-        ret = cursor.fetchone()
-        if not ret:
-            return None
+            ret = cursor.fetchall()
+            for i in ret:
+                dev = Device(id=i[0], serial=i[1], model=i[2], desc=i[3])
+                devices.append(dev)
 
-    return Device(id=ret[0], serial=ret[1], model=ret[2], desc=ret[3])
+        return devices
 
+    @staticmethod
+    def get(entry_id):
+        db = DatabaseMgr.get_db()
 
-def get_all_devices(db):
-    devices = []
+        with db.cursor() as cursor:
+            cursor.execute(f'select * from devices where id = {entry_id}')
 
-    with db.cursor() as cursor:
-        cursor.execute('select * from devices')
+            ret = cursor.fetchone()
+            if not ret:
+                return None
 
-        ret = cursor.fetchall()
-        for i in ret:
-            dev = Device(id=i[0], serial=i[1], model=i[2], desc=i[3])
-            devices.append(dev)
-
-    return devices
+        return Device(id=ret[0], serial=ret[1], model=ret[2], desc=ret[3])

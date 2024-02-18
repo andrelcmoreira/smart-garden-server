@@ -7,7 +7,7 @@ from blueprints.devices import devices_bp
 #from blueprints.device_config import device_cfg_bp
 #from blueprints.device_login import device_login_bp
 from blueprints.login import login_bp
-from models.mgr import init_db
+from models.database_mgr import DatabaseMgr
 from error.handlers import *
 
 
@@ -29,7 +29,7 @@ def create_app():
     app.register_error_handler(404, resource_not_found)
     app.register_error_handler(500, internal_error)
 
-    init_db()
+    DatabaseMgr.init_db()
 
     return app
 
