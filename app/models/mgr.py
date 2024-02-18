@@ -1,5 +1,5 @@
-from os import getenv
 from mysql import connector
+from os import getenv
 
 
 def init_db(app):

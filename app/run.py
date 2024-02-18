@@ -4,10 +4,10 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 
 from blueprints.devices import devices_bp
-from blueprints.device_config import device_cfg_bp
-from blueprints.device_login import device_login_bp
+#from blueprints.device_config import device_cfg_bp
+#from blueprints.device_login import device_login_bp
 from blueprints.login import login_bp
-from db.handler import init_db
+from models.mgr import init_db
 from error.handlers import *
 
 
@@ -20,8 +20,8 @@ def create_app():
     jwt.init_app(app)
 
     app.register_blueprint(devices_bp)
-    app.register_blueprint(device_cfg_bp)
-    app.register_blueprint(device_login_bp)
+    #app.register_blueprint(device_cfg_bp)
+    #app.register_blueprint(device_login_bp)
     app.register_blueprint(login_bp)
 
     app.register_error_handler(400, bad_request)
@@ -29,7 +29,7 @@ def create_app():
     app.register_error_handler(404, resource_not_found)
     app.register_error_handler(500, internal_error)
 
-    init_db(app)
+    init_db()
 
     return app
 
