@@ -37,14 +37,14 @@ def register_device():
     desc = request.json.get('description') # optional
 
     dev_data = Device(serial=serial, model=model, desc=desc)
+    # TODO: validate the scenario where the device already exists
     reg_id = DeviceHandler.add(dev_data)
 
     return jsonify(
         {
             'msg': 'Device registered with success',
             'id': reg_id
-        }
-    ), 201
+        }), 201
 
 
 @devices_bp.route('/', methods=['GET'])
@@ -107,7 +107,7 @@ def del_device(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    if not DeviceHandler.get(dev_id):
+    if not DeviceHandler.entry_exists(dev_id):
         app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
 
@@ -144,7 +144,7 @@ def update_device(dev_id):
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    if not DeviceHandler.get(dev_id):
+    if not DeviceHandler.entry_exists(dev_id):
         app.logger.debug(f'device {dev_id} not found')
         abort(404, "The device isn't registered on database")
 

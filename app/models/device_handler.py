@@ -68,3 +68,13 @@ class DeviceHandler(TableHandler):
                 return None
 
         return Device(id=ret[0], serial=ret[1], model=ret[2], desc=ret[3])
+
+    @staticmethod
+    def entry_exists(entry_id):
+        db = DatabaseMgr.get_db()
+
+        with db.cursor() as cursor:
+            cursor.execute(f'select id from devices where id = {entry_id}')
+
+            ret = cursor.fetchone()
+            return True if ret else False

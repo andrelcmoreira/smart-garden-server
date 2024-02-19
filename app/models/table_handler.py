@@ -3,57 +3,75 @@ from abc import ABC, abstractmethod
 
 class TableHandler:
 
-    """Docstring for TableHandler. """
+    '''
+    Define a base sql table handler.
+
+    '''
 
     @abstractmethod
     def insert(entry):
-        """TODO: Docstring for insert.
+        '''
+        Insert an entry into the table.
 
-        :entry: TODO
-        :returns: TODO
+        :entry: Entry data.
 
-        """
+        '''
         pass
 
     @abstractmethod
     def delete(entry_id):
-        """TODO: Docstring for delete.
+        '''
+        Delete a record from the table.
 
-        :entry_id: TODO
-        :returns: TODO
+        :entry_id: Record ID.
 
-        """
+        '''
         pass
 
     @staticmethod
     @abstractmethod
     def update(entry_id, key, value):
-        """TODO: Docstring for update.
+        '''
+        Update a table's record.
 
-        :entry_id: TODO
-        :key: TODO
-        :value: TODO
-        :returns: TODO
+        :entry_id: Record ID.
+        :key: Column to be updated.
+        :value: New value to replace the old one.
 
-        """
+        '''
         pass
 
     @staticmethod
     @abstractmethod
     def get_all():
-        """TODO: Docstring for get_all.
-        :returns: TODO
+        '''
+        Get all elements from the table.
 
-        """
+        :returns: All the table entries.
+
+        '''
         pass
 
     @staticmethod
     @abstractmethod
     def get(entry_id):
-        """TODO: Docstring for get.
+        '''
+        Get an specific element from the table.
 
-        :entry_id: TODO
-        :returns: TODO
+        :entry_id: ID of entry.
+        :returns: The entry data.
 
-        """
+        '''
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def entry_exists(entry_id):
+        '''
+        Verify if an entry specified by 'entry_id' exists on the table.
+
+        :entry_id: ID of entry.
+        :returns: True if it exist; otherwise False.
+
+        '''
         pass
