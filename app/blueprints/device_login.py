@@ -3,7 +3,9 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
-from db.models.config import Config
+from models.entities.config import Config
+from models.device_handler import DeviceHandler
+from models.config_handler import ConfigHandler
 from validators import validate_request
 
 
@@ -33,33 +35,27 @@ def login_device():
         app.logger.debug(f"missing '{key}' in request")
         abort(400, 'Missing required data')
 
-    with app.db.cursor() as cursor:
-        cursor.execute(f'select * from devices where id = {dev_id}')
+    dev = DeviceHandler.get(dev_id)
+    if not dev:
+        app.logger.debug(f'device {dev_id} not found')
+        abort(404, "The device isn't registered on database")
 
-        ret = cursor.fetchone()
-        if not ret:
-            app.logger.debug(f'device {dev_id} not found')
-            abort(404, "The device isn't registered on database")
+    app.logger.debug(f'found device with id {dev_id}: {dev}')
 
-        app.logger.debug(f'found device -> {ret}')
+    if dev.serial != serial:
+        app.logger.debug(
+            f"incorrect serial number '{serial}' for device '{dev_id}'"
+        )
+        abort(401, 'Authentication failed')
 
-        if ret[1] != serial:
-            app.logger.debug(
-                f"incorrect serial number '{serial}' for device '{dev_id}'"
-            )
-            abort(401, 'Authentication failed')
+    cfg = ConfigHandler.get(dev_id)
+    if not cfg:
+        app.logger.debug(f'device {dev_id} has no config')
+        abort(404, "There's no config for the specific device")
 
-        cursor.execute(f'select * from configs where dev_id = {dev_id}')
-
-        ret = cursor.fetchone()
-        if not ret:
-            app.logger.debug(f'device {dev_id} has no config')
-            abort(404, "There's no config for the specific device")
-
-        app.logger.debug(f'found config -> {ret}')
+    app.logger.debug(f'found config -> {cfg}')
 
     token = flask_jwt_extended.create_access_token(identity=(dev_id, serial))
-    cfg = Config(id=ret[1], interval=ret[3], group=ret[2])
 
     return jsonify(
         {

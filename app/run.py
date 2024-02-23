@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 
 from blueprints.devices import devices_bp
 #from blueprints.device_config import device_cfg_bp
-#from blueprints.device_login import device_login_bp
+from blueprints.device_login import device_login_bp
 from blueprints.login import login_bp
 from models.database_mgr import DatabaseMgr
 from error.handlers import *
@@ -21,7 +21,7 @@ def create_app():
 
     app.register_blueprint(devices_bp)
     #app.register_blueprint(device_cfg_bp)
-    #app.register_blueprint(device_login_bp)
+    app.register_blueprint(device_login_bp)
     app.register_blueprint(login_bp)
 
     app.register_error_handler(400, bad_request)

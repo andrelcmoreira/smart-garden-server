@@ -1,3 +1,5 @@
+from models.database_mgr import DatabaseMgr
+from models.entities.config import Config
 from models.table_handler import TableHandler
 
 
@@ -5,47 +7,42 @@ class ConfigHandler(TableHandler):
 
     """Docstring for ConfigHandler. """
 
-    def insert(self, entry):
-        """TODO: Docstring for insert.
-
-        :entry: TODO
-        :returns: TODO
-
-        """
+    @staticmethod
+    def insert(entry):
         pass
 
-    def delete(self, entry_id):
-        """TODO: Docstring for delete.
-
-        :entry_id: TODO
-        :returns: TODO
-
-        """
+    @staticmethod
+    def delete(entry_id):
         pass
 
-    def update(self, entry_id, key, value):
-        """TODO: Docstring for update.
-
-        :entry_id: TODO
-        :key: TODO
-        :value: TODO
-        :returns: TODO
-
-        """
+    @staticmethod
+    def update(entry_id, key, value):
         pass
 
+    @staticmethod
     def get_all(self):
-        """TODO: Docstring for get_all.
-        :returns: TODO
+        db = DatabaseMgr.get_db()
+        cfgs = []
 
-        """
-        pass
+        with db.cursor() as cursor:
+            cursor.execute('select * from configs')
 
-    def get(self, entry_id):
-        """TODO: Docstring for get.
+            ret = cursor.fetchall()
+            for i in ret:
+                cfg = Config(id=ret[1], interval=ret[3], group=ret[2])
+                cfgs.append(cfg)
 
-        :entry_id: TODO
-        :returns: TODO
+        return cfgs
 
-        """
-        pass
+    @staticmethod
+    def get(entry_id):
+        db = DatabaseMgr.get_db()
+
+        with db.cursor() as cursor:
+            cursor.execute(f'select * from configs where dev_id = {entry_id}')
+
+            ret = cursor.fetchone()
+            if not ret:
+                return None
+
+        return Config(id=ret[1], interval=ret[3], group=ret[2])
