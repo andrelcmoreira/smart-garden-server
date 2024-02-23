@@ -2,7 +2,9 @@ from flask import abort, jsonify, request, Blueprint
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
-from db.models.config import Config
+from models.entities.config import Config
+from models.device_handler import DeviceHandler
+from models.config_handler import ConfigHandler
 from validators import validate_request, validate_field
 
 
@@ -37,19 +39,14 @@ def config_device(dev_id):
 
     group = request.json.get('group') # optional
 
-    with app.db.cursor() as cursor:
-        cursor.execute(f'select * from devices where id = {dev_id}')
+    if not DeviceHandler.entry_exists(dev_id):
+        app.logger.debug(f'device {dev_id} not found')
+        abort(404, "The device isn't registered on database")
 
-        ret = cursor.fetchone()
-        if not ret:
-            app.logger.debug(f'device {dev_id} not found')
-            abort(404, "The device isn't registered on database")
+    app.logger.debug(f'found device with id {dev_id}')
 
-        app.logger.debug(f'found device -> {ret}')
-
-        cursor.execute(f'insert into configs(dev_id, dev_group, dev_interval) \
-                       values ("{dev_id}", "{group}", "{interval}")')
-        db.commit()
+    cfg = Config(id=dev_id, interval=interval, group=group)
+    ConfigHandler.insert(cfg)
 
     return jsonify({ 'msg': 'Configuration registered with success' }), 201
 
@@ -66,20 +63,17 @@ def get_config(dev_id):
               reply (see the API documentation for more informations).
 
     '''
-    if (not validate_field('id', dev_id)):
+    app.logger.debug(f'device id -> {dev_id}')
+
+    if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    with app.db.cursor() as cursor:
-        cursor.execute(f'select * from configs where dev_id = {dev_id}')
+    cfg = ConfigHandler.get(dev_id)
+    if not cfg:
+        app.logger.debug(f'config for {dev_id} not found')
+        abort(404, "The device has no configuration")
 
-        ret = cursor.fetchone()
-        if not ret:
-            app.logger.debug(f'device {dev_id} has no config')
-            abort(404, "The device has no configuration")
-
-        app.logger.debug(f'found device -> {ret}')
-
-    cfg = Config(id=ret[0], interval=ret[2], group=ret[3])
+    app.logger.debug(f'config data -> {cfg}')
 
     return jsonify(cfg), 200
 
@@ -94,17 +88,9 @@ def get_configs():
               reply.
 
     '''
-    cfgs = []
+    cfgs = ConfigHandler.get_all()
 
-    with app.db.cursor() as cursor:
-        cursor.execute(f'select * from configs')
-
-        ret = cursor.fetchall()
-        for entry in ret:
-            app.logger.debug(f'found config -> {entry}')
-
-            cfg = Config(entry[0], entry[3], entry[2])
-            cfgs.append(cfg)
+    app.logger.debug(f'found cfgs -> {cfgs}')
 
     return jsonify(cfgs), 200
 
@@ -126,18 +112,13 @@ def del_config(dev_id):
     if not validate_field('id', dev_id):
         abort(400, 'Bad request')
 
-    with app.db.cursor() as cursor:
-        cursor.execute(f'select * from configs where dev_id = {dev_id}')
+    if not ConfigHandler.entry_exists(dev_id):
+        app.logger.debug(f'device {dev_id} has no config')
+        abort(404, "There's no config for the specific device")
 
-        ret = cursor.fetchone()
-        if not ret:
-            app.logger.debug(f'device {dev_id} has no config')
-            abort(404, "The device has no configuration")
+    app.logger.debug(f'found config for device {dev_id}')
 
-        app.logger.debug(f'found device -> {ret}')
-
-        cursor.execute(f'delete from configs where dev_id = {dev_id}')
-        db.commit()
+    ConfigHandler.delete(dev_id)
 
     return jsonify({ 'msg': 'Config deleted from database' }), 200
 
@@ -168,18 +149,12 @@ def update_config(dev_id):
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
 
-    with app.db.cursor() as cursor:
-        cursor.execute(f'select * from configs where dev_id = {dev_id}')
+    if not ConfigHandler.entry_exists(dev_id):
+        app.logger.debug(f'device {dev_id} has no config')
+        abort(404, "There's no config for the specific device")
 
-        ret = cursor.fetchone()
-        if not ret:
-            app.logger.debug(f'device {dev_id} has no config')
-            abort(404, "There's no config for the specific device")
+    app.logger.debug(f'found config for device {dev_id}')
 
-        app.logger.debug(f'found device -> {ret}')
-
-        cursor.execute(f'update configs set {param} = "{val}" \
-                       where dev_id = {dev_id}')
-        db.commit()
+    ConfigHandler.update(dev_id, param, val)
 
     return jsonify({ 'msg': 'Config updated in database' }), 200

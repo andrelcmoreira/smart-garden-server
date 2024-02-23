@@ -4,7 +4,7 @@ URL="127.0.0.1"
 PORT=5000
 ID="$1"
 TOKEN="$2"
-BODY='{ "param": "group",  "value": "new-foo-group" }'
+BODY='{ "param": "dev_group",  "value": "new-foo-group" }'
 
 curl -X PUT "$URL:$PORT/devices/$ID/config/" \
   -H "Content-Type: application/json" \

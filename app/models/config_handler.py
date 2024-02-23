@@ -8,19 +8,36 @@ class ConfigHandler(TableHandler):
     """Docstring for ConfigHandler. """
 
     @staticmethod
-    def insert(entry):
-        pass
+    def insert(cfg):
+        db = DatabaseMgr.get_db()
+
+        with db.cursor() as cursor:
+            cursor.execute(f'''
+                insert into configs(dev_id, dev_group, dev_interval)
+                values ("{cfg.id}", "{cfg.group}", "{cfg.interval}")''')
+            db.commit()
 
     @staticmethod
     def delete(entry_id):
-        pass
+        db = DatabaseMgr.get_db()
+
+        with db.cursor() as cursor:
+            cursor.execute(f'delete from configs where dev_id = {entry_id}')
+            db.commit()
 
     @staticmethod
     def update(entry_id, key, value):
-        pass
+        db = DatabaseMgr.get_db()
+
+        with db.cursor() as cursor:
+            cursor.execute(f'''
+                           update configs set {key} = "{value}"
+                           where dev_id = {entry_id}
+                           ''')
+            db.commit()
 
     @staticmethod
-    def get_all(self):
+    def get_all():
         db = DatabaseMgr.get_db()
         cfgs = []
 
@@ -29,7 +46,7 @@ class ConfigHandler(TableHandler):
 
             ret = cursor.fetchall()
             for i in ret:
-                cfg = Config(id=ret[1], interval=ret[3], group=ret[2])
+                cfg = Config(id=i[1], interval=i[3], group=i[2])
                 cfgs.append(cfg)
 
         return cfgs
@@ -46,3 +63,13 @@ class ConfigHandler(TableHandler):
                 return None
 
         return Config(id=ret[1], interval=ret[3], group=ret[2])
+
+    @staticmethod
+    def entry_exists(entry_id):
+        db = DatabaseMgr.get_db()
+
+        with db.cursor() as cursor:
+            cursor.execute(f'select id from configs where dev_id = {entry_id}')
+
+            ret = cursor.fetchone()
+            return True if ret else False
