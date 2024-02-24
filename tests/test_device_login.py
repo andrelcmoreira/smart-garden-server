@@ -1,10 +1,10 @@
 from unittest import main, TestCase
 from unittest.mock import patch
 
-from run import create_app
-
 from models.entities.config import Config
 from models.entities.device import Device
+
+from run import create_app
 
 
 class DeviceLoginEndpointTest(TestCase):
@@ -158,103 +158,102 @@ class DeviceLoginEndpointTest(TestCase):
             get_config_mock.assert_not_called()
             create_token_mock.assert_not_called()
 
-#    @patch('flask_jwt_extended.create_access_token')
-#    @patch('storage.devices.Devices.get')
-#    @patch('storage.configs.Configs.get')
-#    def test_device_login_with_not_existent_device(self, get_config_mock, \
-#                                                   get_device_mock, \
-#                                                   create_token_mock):
-#        '''
-#        TODO
-#        '''
-#        app = create_app()
-#
-#        with app.test_client() as cli:
-#            dev_id = '2i74qzhd'
-#            serial = 'fakeserial'
-#            body = { "id": dev_id, "serial-number": serial }
-#            expected_msg = { 'msg': 'Device not registered on database' }
-#
-#            get_device_mock.return_value = {}
-#
-#            ret = cli.post('/devices/login/', json=body)
-#
-#            self.assertEqual(ret.json, expected_msg)
-#            self.assertEqual(ret.status_code, 404)
-#
-#            get_device_mock.assert_called_once_with(dev_id)
-#            get_config_mock.assert_not_called()
-#            create_token_mock.assert_not_called()
-#
-#    @patch('flask_jwt_extended.create_access_token')
-#    @patch('storage.devices.Devices.get')
-#    @patch('storage.configs.Configs.get')
-#    def test_device_login_with_wrong_serial(self, get_config_mock, \
-#                                            get_device_mock, create_token_mock):
-#        '''
-#        TODO
-#        '''
-#        app = create_app()
-#
-#        with app.test_client() as cli:
-#            dev_id = '2i74qzhd'
-#            serial = 'fakeserial'
-#            body = { "id": dev_id, "serial-number": serial }
-#            dev = {
-#                "desc": "fake-desc",
-#                "id": dev_id,
-#                "model": "fake-model",
-#                "serial": "wrong-serial"
-#            }
-#            expected_msg = { 'msg': 'Authentication failed' }
-#
-#            get_device_mock.return_value = dev
-#
-#            ret = cli.post('/devices/login/', json=body)
-#
-#            self.assertEqual(ret.json, expected_msg)
-#            self.assertEqual(ret.status_code, 401)
-#
-#            get_device_mock.assert_called_once_with(dev_id)
-#            get_config_mock.assert_not_called()
-#            create_token_mock.assert_not_called()
-#
-#    @patch('flask_jwt_extended.create_access_token')
-#    @patch('storage.devices.Devices.get')
-#    @patch('storage.configs.Configs.get')
-#    def test_device_login_with_not_existent_config(self, get_config_mock, \
-#                                                   get_device_mock, \
-#                                                   create_token_mock):
-#        '''
-#        TODO
-#        '''
-#        app = create_app()
-#
-#        with app.test_client() as cli:
-#            dev_id = '2i74qzhd'
-#            serial = 'fakeserial'
-#            body = { "id": dev_id, "serial-number": serial }
-#            dev = {
-#                "desc": "fake-desc",
-#                "id": dev_id,
-#                "model": "fake-model",
-#                "serial": serial
-#            }
-#            expected_msg = {
-#                'msg': "There's no config for the specified device"
-#            }
-#
-#            get_config_mock.return_value = {}
-#            get_device_mock.return_value = dev
-#
-#            ret = cli.post('/devices/login/', json=body)
-#
-#            self.assertEqual(ret.json, expected_msg)
-#            self.assertEqual(ret.status_code, 404)
-#
-#            get_device_mock.assert_called_once_with(dev_id)
-#            get_config_mock.assert_called_once_with(dev_id)
-#            create_token_mock.assert_not_called()
+    @patch('flask_jwt_extended.create_access_token')
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.config_handler.ConfigHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_device_login_with_not_existent_device(self, init_db_mock, \
+                                                   get_config_mock, \
+                                                   get_device_mock, \
+                                                   create_token_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
+
+        with app.test_client() as cli:
+            dev_id = '2i74qzhd'
+            serial = 'fakeserial'
+            body = { "id": dev_id, "serial-number": serial }
+            expected_msg = { "msg": "The device isn't registered on database" }
+
+            get_device_mock.return_value = {}
+
+            ret = cli.post('/devices/login/', json=body)
+
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 404)
+
+            get_device_mock.assert_called_once_with(dev_id)
+            get_config_mock.assert_not_called()
+            create_token_mock.assert_not_called()
+
+    @patch('flask_jwt_extended.create_access_token')
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.config_handler.ConfigHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_device_login_with_wrong_serial(self, init_db_mock, \
+                                            get_config_mock, \
+                                            get_device_mock, create_token_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
+
+        with app.test_client() as cli:
+            dev_id = '2i74qzhd'
+            serial = 'fakeserial'
+            body = { "id": dev_id, "serial-number": serial }
+            dev = Device(serial='wrong-serial', model="fake-model", id=dev_id,
+                         desc='fake-desc')
+            expected_msg = { 'msg': 'Authentication failed' }
+
+            get_device_mock.return_value = dev
+
+            ret = cli.post('/devices/login/', json=body)
+
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 401)
+
+            get_device_mock.assert_called_once_with(dev_id)
+            get_config_mock.assert_not_called()
+            create_token_mock.assert_not_called()
+
+    @patch('flask_jwt_extended.create_access_token')
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.config_handler.ConfigHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_device_login_with_not_existent_config(self, init_db_mock, \
+                                                   get_config_mock, \
+                                                   get_device_mock, \
+                                                   create_token_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
+
+        with app.test_client() as cli:
+            dev_id = '2i74qzhd'
+            serial = 'fakeserial'
+            body = { "id": dev_id, "serial-number": serial }
+            dev = Device(serial=serial, model="fake-model", id=dev_id,
+                         desc='fake-desc')
+            expected_msg = {
+                'msg': "There's no config for the specific device"
+            }
+
+            get_config_mock.return_value = None
+            get_device_mock.return_value = dev
+
+            ret = cli.post('/devices/login/', json=body)
+
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 404)
+
+            get_device_mock.assert_called_once_with(dev_id)
+            get_config_mock.assert_called_once_with(dev_id)
+            create_token_mock.assert_not_called()
+
 
 if __name__ == "__main__":
     main()
