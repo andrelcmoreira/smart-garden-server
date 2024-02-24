@@ -52,31 +52,32 @@ class DeviceLoginEndpointTest(TestCase):
             get_config_mock.assert_called_once_with(dev_id)
             create_token_mock.assert_called_once_with(identity=(dev_id, serial))
 
-#    @patch('flask_jwt_extended.create_access_token')
-#    @patch('storage.devices.Devices.get')
-#    @patch('storage.configs.Configs.get')
-#    def test_device_login_with_invalid_id(self, get_config_mock, \
-#                                          get_device_mock, create_token_mock):
-#        '''
-#        TODO
-#        '''
-#        app = create_app()
-#
-#        with app.test_client() as cli:
-#            dev_id = 'bad-id'
-#            serial = 'fakeserial'
-#            body = { "id": dev_id, "serial-number": serial }
-#            expected_msg = { 'msg': 'Bad request' }
-#
-#            ret = cli.post('/devices/login/', json=body)
-#
-#            self.assertEqual(ret.json, expected_msg)
-#            self.assertEqual(ret.status_code, 400)
-#
-#            get_device_mock.assert_not_called()
-#            get_config_mock.assert_not_called()
-#            create_token_mock.assert_not_called()
-#
+    @patch('flask_jwt_extended.create_access_token')
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.config_handler.ConfigHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_device_login_with_invalid_id(self, init_db_mock, get_config_mock, \
+                                          get_device_mock, create_token_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
+
+        with app.test_client() as cli:
+            dev_id = 'bad-id'
+            serial = 'fakeserial'
+            body = { "id": dev_id, "serial-number": serial }
+            expected_msg = { 'msg': 'Bad request' }
+
+            ret = cli.post('/devices/login/', json=body)
+
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 400)
+
+            get_device_mock.assert_not_called()
+            get_config_mock.assert_not_called()
+            create_token_mock.assert_not_called()
+
 #    @patch('flask_jwt_extended.create_access_token')
 #    @patch('storage.devices.Devices.get')
 #    @patch('storage.configs.Configs.get')
