@@ -38,7 +38,7 @@ def register_device():
 
     dev_data = Device(serial=serial, model=model, desc=desc)
     # TODO: validate the scenario where the device already exists
-    reg_id = DeviceHandler.add(dev_data)
+    reg_id = DeviceHandler.insert(dev_data)
 
     return jsonify(
         {

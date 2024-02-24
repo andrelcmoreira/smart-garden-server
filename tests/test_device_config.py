@@ -5,7 +5,6 @@ from run import create_app
 
 from models.config_handler import ConfigHandler
 from models.entities.config import Config
-from models.entities.device import Device
 
 
 class DeviceConfigEndpointTest(TestCase):

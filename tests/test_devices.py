@@ -3,8 +3,9 @@ from unittest.mock import patch
 
 from flask_jwt_extended import create_access_token
 
-from storage.models.device import Device
+from models.entities.device import Device
 from run import create_app
+
 
 class DeviceEndpointTest(TestCase):
 
@@ -14,8 +15,10 @@ class DeviceEndpointTest(TestCase):
     '''
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get_all')
-    def test_get_devices_with_empty_db(self, get_all_mock, jwt_required_mock):
+    @patch('models.device_handler.DeviceHandler.get_all')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_get_devices_with_empty_db(self, init_db_mock, get_all_mock, \
+                                       jwt_required_mock):
         '''
         TODO
         '''
@@ -33,8 +36,9 @@ class DeviceEndpointTest(TestCase):
             get_all_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get_all')
-    def test_get_devices_with_not_empty_db(self, get_all_mock, \
+    @patch('models.device_handler.DeviceHandler.get_all')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_get_devices_with_not_empty_db(self, init_db_mock, get_all_mock, \
                                            jwt_required_mock):
         '''
         TODO
@@ -43,31 +47,26 @@ class DeviceEndpointTest(TestCase):
 
         with app.test_client() as cli:
             devices = [
-                {
-                  "desc": "foo-desc",
-                  "id": "foo-id",
-                  "serial": "foo-serial"
-                },
-                {
-                  "desc": "bar-desc",
-                  "id": "bar-id",
-                  "serial": "bar-serial"
-                }
+                Device(id='foo-id', serial='foo-serial', model='foo-model',
+                       desc='foo-desc'),
+                Device(id='bar-id', serial='bar-serial', model='bar-model',
+                       desc='bar-desc')
             ]
 
             get_all_mock.return_value = devices
 
             ret = cli.get('/devices/')
 
-            self.assertEqual(ret.json, devices)
+            self.assertEqual(ret.json, [dev.__dict__ for dev in devices])
             self.assertEqual(ret.status_code, 200)
 
             jwt_required_mock.assert_called_once()
             get_all_mock.assert_called_once()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get')
-    def test_get_device_with_not_existent_device(self, get_mock, \
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_get_device_with_not_existent_device(self, init_db_mock, get_mock, \
                                                  jwt_required_mock):
         '''
         TODO
@@ -80,7 +79,7 @@ class DeviceEndpointTest(TestCase):
                 "msg": "The device isn't registered on database"
             }
 
-            get_mock.return_value = {}
+            get_mock.return_value = None
 
             ret = cli.get('/devices/' + dev_id)
 
@@ -91,35 +90,9 @@ class DeviceEndpointTest(TestCase):
             get_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get')
-    def test_get_device_with_existent_device(self, get_mock, jwt_required_mock):
-        '''
-        TODO
-        '''
-        app = create_app()
-
-        with app.test_client() as cli:
-            dev_id = 'fakeid'
-            device_data = {
-                "desc": "fake-desc",
-                "id": "fake-id",
-                "serial": "fake-serial"
-            }
-
-            get_mock.return_value = device_data
-
-            ret = cli.get('/devices/' + dev_id)
-
-            self.assertEqual(ret.json, device_data)
-            self.assertEqual(ret.status_code, 200)
-
-            jwt_required_mock.assert_called_once()
-            get_mock.assert_called_once_with(dev_id)
-
-    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get')
-    @patch('storage.devices.Devices.rm')
-    def test_del_device_with_existent_device(self, rm_mock, get_mock, \
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_get_device_with_existent_device(self, init_db_mock, get_mock, \
                                              jwt_required_mock):
         '''
         TODO
@@ -128,13 +101,37 @@ class DeviceEndpointTest(TestCase):
 
         with app.test_client() as cli:
             dev_id = 'fakeid'
-            expected_msg = { 'msg': 'Device unregistered from database' }
+            dev = Device(id='fake-id', serial='fake-serial', model='fake-model',
+                         desc='fake-desc')
 
-            get_mock.return_value = {
-                "desc": "fake-desc",
-                "id": "fake-id",
-                "serial": "fake-serial"
-            }
+            get_mock.return_value = dev
+
+            ret = cli.get('/devices/' + dev_id)
+
+            self.assertEqual(ret.json, dev.__dict__)
+            self.assertEqual(ret.status_code, 200)
+
+            jwt_required_mock.assert_called_once()
+            get_mock.assert_called_once_with(dev_id)
+
+    @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
+    @patch('models.device_handler.DeviceHandler.entry_exists')
+    @patch('models.device_handler.DeviceHandler.delete')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_del_device_with_existent_device(self, init_db_mock, delete_mock, \
+                                             exists_mock, jwt_required_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
+
+        with app.test_client() as cli:
+            dev_id = 'fakeid'
+            expected_msg = { 'msg': 'Device unregistered from database' }
+            dev = Device(id=dev_id, serial='fake-serial', model='fake-model',
+                         desc='fake-desc')
+
+            exists_mock.return_value = dev
 
             ret = cli.delete('/devices/' + dev_id)
 
@@ -142,13 +139,15 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 200)
 
             jwt_required_mock.assert_called_once()
-            get_mock.assert_called_once_with(dev_id)
-            rm_mock.assert_called_once_with(dev_id)
+            exists_mock.assert_called_once_with(dev_id)
+            delete_mock.assert_called_once_with(dev_id)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get')
-    @patch('storage.devices.Devices.rm')
-    def test_del_device_with_not_existent_device(self, rm_mock, get_mock, \
+    @patch('models.device_handler.DeviceHandler.entry_exists')
+    @patch('models.device_handler.DeviceHandler.delete')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_del_device_with_not_existent_device(self, init_db_mock, \
+                                                 delete_mock, exists_mock, \
                                                  jwt_required_mock):
         '''
         TODO
@@ -161,7 +160,7 @@ class DeviceEndpointTest(TestCase):
                 "msg": "The device isn't registered on database"
             }
 
-            get_mock.return_value = {}
+            exists_mock.return_value = False
 
             ret = cli.delete('/devices/' + dev_id)
 
@@ -169,13 +168,14 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 404)
 
             jwt_required_mock.assert_called_once()
-            get_mock.assert_called_once_with(dev_id)
-            rm_mock.assert_not_called()
+            exists_mock.assert_called_once_with(dev_id)
+            delete_mock.assert_not_called()
 
-    @patch('random.sample')
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device(self, add_mock, jwt_required_mock, sample_mock):
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device(self, init_db_mock, insert_mock, \
+                             jwt_required_mock):
         '''
         TODO
         '''
@@ -193,13 +193,13 @@ class DeviceEndpointTest(TestCase):
                 'id': device_id
             }
             fake_device = Device(
-                id=device_id,
+                id='',
                 serial=body['serial-number'],
                 model=body['model'],
                 desc=body['description']
             )
 
-            sample_mock.return_value = device_id
+            insert_mock.return_value = device_id
 
             ret = cli.post('/devices/', json=body)
 
@@ -207,12 +207,13 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 201)
 
             jwt_required_mock.assert_called_once()
-            sample_mock.assert_called_once()
-            add_mock.assert_called_once_with(fake_device)
+            insert_mock.assert_called_once_with(fake_device)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_missing_model(self, add_mock, \
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_missing_model(self, init_db_mock, \
+                                                insert_mock, \
                                                 jwt_required_mock):
         '''
         TODO
@@ -232,11 +233,12 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 400)
 
             jwt_required_mock.assert_called_once()
-            add_mock.assert_not_called()
+            insert_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_blank_model(self, add_mock, \
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_blank_model(self, init_db_mock, insert_mock, \
                                               jwt_required_mock):
         '''
         TODO
@@ -257,11 +259,13 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 400)
 
             jwt_required_mock.assert_called_once()
-            add_mock.assert_not_called()
+            insert_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_missing_serial(self, add_mock, \
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_missing_serial(self, init_db_mock, \
+                                                 insert_mock, \
                                                  jwt_required_mock):
         '''
         TODO
@@ -281,12 +285,13 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 400)
 
             jwt_required_mock.assert_called_once()
-            add_mock.assert_not_called()
+            insert_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_blank_serial(self, add_mock, \
-                                               jwt_required_mock):
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_blank_serial(self, init_db_mock, \
+                                               insert_mock, jwt_required_mock):
         '''
         TODO
         '''
@@ -306,13 +311,14 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 400)
 
             jwt_required_mock.assert_called_once()
-            add_mock.assert_not_called()
+            insert_mock.assert_not_called()
 
-    @patch('random.sample')
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_missing_desc(self, add_mock, \
-                                               jwt_required_mock, sample_mock):
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_missing_desc(self, init_db_mock, \
+                                               insert_mock, \
+                                               jwt_required_mock):
         '''
         TODO
         '''
@@ -330,13 +336,13 @@ class DeviceEndpointTest(TestCase):
                 'id': device_id
             }
             fake_device = Device(
-                id=device_id,
+                id='',
                 serial=body['serial-number'],
                 model=body['model'],
                 desc=body['description']
             )
 
-            sample_mock.return_value = device_id
+            insert_mock.return_value = device_id
 
             ret = cli.post('/devices/', json=body)
 
@@ -344,14 +350,13 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 201)
 
             jwt_required_mock.assert_called_once()
-            sample_mock.assert_called_once()
-            add_mock.assert_called_once()
+            insert_mock.assert_called_once_with(fake_device)
 
-    @patch('random.sample')
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_blank_desc(self, add_mock, \
-                                             jwt_required_mock, sample_mock):
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_blank_desc(self, init_db_mock, insert_mock, \
+                                             jwt_required_mock):
         '''
         TODO
         '''
@@ -369,13 +374,13 @@ class DeviceEndpointTest(TestCase):
                 'id': device_id
             }
             fake_device = Device(
-                id=device_id,
+                id='',
                 serial=body['serial-number'],
                 model=body['model'],
                 desc=body['description']
             )
 
-            sample_mock.return_value = device_id
+            insert_mock.return_value = device_id
 
             ret = cli.post('/devices/', json=body)
 
@@ -383,12 +388,13 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 201)
 
             jwt_required_mock.assert_called_once()
-            sample_mock.assert_called_once()
-            add_mock.assert_called_once()
+            insert_mock.assert_called_once_with(fake_device)
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.add')
-    def test_register_device_with_no_parameters(self, add_mock, \
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_with_no_parameters(self, init_db_mock, \
+                                                insert_mock, \
                                                 jwt_required_mock):
         '''
         TODO
@@ -404,13 +410,14 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 400)
 
             jwt_required_mock.assert_called_once()
-            add_mock.assert_not_called()
+            insert_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get')
-    @patch('storage.devices.Devices.update')
-    def test_update_not_existent_device(self, update_mock, get_mock, \
-                                        jwt_required_mock):
+    @patch('models.device_handler.DeviceHandler.entry_exists')
+    @patch('models.device_handler.DeviceHandler.update')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_update_not_existent_device(self, init_db_mock, update_mock, \
+                                        exists_mock, jwt_required_mock):
         '''
         TODO
         '''
@@ -423,7 +430,7 @@ class DeviceEndpointTest(TestCase):
             }
             data = { 'param': 'foo-param', 'value': 'foo-value' }
 
-            get_mock.return_value = {}
+            exists_mock.return_value = {}
 
             ret = cli.put('/devices/' + dev_id, json=data)
 
@@ -431,14 +438,15 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.status_code, 404)
 
             jwt_required_mock.assert_called_once()
-            get_mock.assert_called_once_with(dev_id)
+            exists_mock.assert_called_once_with(dev_id)
             update_mock.assert_not_called()
 
     @patch('flask_jwt_extended.view_decorators.verify_jwt_in_request')
-    @patch('storage.devices.Devices.get')
-    @patch('storage.devices.Devices.update')
-    def test_update_existent_device(self, update_mock, get_mock, \
-                                    jwt_required_mock):
+    @patch('models.device_handler.DeviceHandler.entry_exists')
+    @patch('models.device_handler.DeviceHandler.update')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_update_existent_device(self, init_db_mock, update_mock, \
+                                    exists_mock, jwt_required_mock):
          '''
          TODO
          '''
@@ -449,11 +457,7 @@ class DeviceEndpointTest(TestCase):
              data = { 'param': 'foo-param', 'value': 'foo-value' }
              expected_msg = { "msg": "Device updated in database" }
 
-             get_mock.return_value = {
-                 "device-id": "fake-id",
-                 "serial-number": "fake-serial",
-                 "description": "fake-desc",
-             }
+             exists_mock.return_value = True
 
              ret = cli.put('/devices/' + dev_id, json=data)
 
@@ -461,15 +465,13 @@ class DeviceEndpointTest(TestCase):
              self.assertEqual(ret.status_code, 200)
 
              jwt_required_mock.assert_called_once()
-             get_mock.assert_called_once_with(dev_id)
-             update_mock.assert_called_once_with(
-                 dev_id,
-                 data['param'],
-                 data['value']
-             )
+             exists_mock.assert_called_once_with(dev_id)
+             update_mock.assert_called_once_with(dev_id, data['param'],
+                                                 data['value'])
 
-    @patch('storage.devices.Devices.get_all')
-    def test_get_devices_without_token(self, get_all_mock):
+    @patch('models.device_handler.DeviceHandler.get_all')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_get_devices_without_token(self, init_db_mock, get_all_mock):
         '''
         TODO
         '''
@@ -484,8 +486,9 @@ class DeviceEndpointTest(TestCase):
 
             get_all_mock.assert_not_called()
 
-    @patch('storage.devices.Devices.get')
-    def test_get_device_without_token(self, get_mock):
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_get_device_without_token(self, init_db_mock, get_mock):
         '''
         TODO
         '''
@@ -502,9 +505,11 @@ class DeviceEndpointTest(TestCase):
 
             get_mock.assert_not_called()
 
-    @patch('storage.devices.Devices.get')
-    @patch('storage.devices.Devices.rm')
-    def test_del_device_without_token(self, rm_mock, get_mock):
+    @patch('models.device_handler.DeviceHandler.entry_exists')
+    @patch('models.device_handler.DeviceHandler.delete')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_del_device_without_token(self, init_db_mock, delete_mock, \
+                                      exists_mock):
         '''
         TODO
         '''
@@ -519,11 +524,12 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 401)
 
-            get_mock.assert_not_called()
-            rm_mock.assert_not_called()
+            exists_mock.assert_not_called()
+            delete_mock.assert_not_called()
 
-    @patch('storage.devices.Devices.add')
-    def test_register_device_without_token(self, add_mock):
+    @patch('models.device_handler.DeviceHandler.insert')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_register_device_without_token(self, init_db_mock, insert_mock):
         '''
         TODO
         '''
@@ -542,11 +548,13 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 401)
 
-            add_mock.assert_not_called()
+            insert_mock.assert_not_called()
 
-    @patch('storage.devices.Devices.get')
-    @patch('storage.devices.Devices.update')
-    def test_update_device_without_token(self, update_mock, get_mock):
+    @patch('models.device_handler.DeviceHandler.entry_exists')
+    @patch('models.device_handler.DeviceHandler.update')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_update_device_without_token(self, init_db_mock, update_mock, \
+                                         exists_mock):
         '''
         TODO
         '''
@@ -562,8 +570,9 @@ class DeviceEndpointTest(TestCase):
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 401)
 
-            get_mock.assert_not_called()
+            exists_mock.assert_not_called()
             update_mock.assert_not_called()
+
 
 if __name__ == "__main__":
     main()
