@@ -106,30 +106,31 @@ class DeviceLoginEndpointTest(TestCase):
             get_config_mock.assert_not_called()
             create_token_mock.assert_not_called()
 
-#    @patch('flask_jwt_extended.create_access_token')
-#    @patch('storage.devices.Devices.get')
-#    @patch('storage.configs.Configs.get')
-#    def test_device_login_with_missing_id(self, get_config_mock, \
-#                                          get_device_mock, create_token_mock):
-#        '''
-#        TODO
-#        '''
-#        app = create_app()
-#
-#        with app.test_client() as cli:
-#            serial = 'fake-serial'
-#            body = { "serial-number": serial }
-#            expected_msg = { 'msg': 'Missing required data' }
-#
-#            ret = cli.post('/devices/login/', json=body)
-#
-#            self.assertEqual(ret.json, expected_msg)
-#            self.assertEqual(ret.status_code, 400)
-#
-#            get_device_mock.assert_not_called()
-#            get_config_mock.assert_not_called()
-#            create_token_mock.assert_not_called()
-#
+    @patch('flask_jwt_extended.create_access_token')
+    @patch('models.device_handler.DeviceHandler.get')
+    @patch('models.config_handler.ConfigHandler.get')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
+    def test_device_login_with_missing_id(self, init_db_mock, get_config_mock, \
+                                          get_device_mock, create_token_mock):
+        '''
+        TODO
+        '''
+        app = create_app()
+
+        with app.test_client() as cli:
+            serial = 'fake-serial'
+            body = { "serial-number": serial }
+            expected_msg = { 'msg': 'Missing required data' }
+
+            ret = cli.post('/devices/login/', json=body)
+
+            self.assertEqual(ret.json, expected_msg)
+            self.assertEqual(ret.status_code, 400)
+
+            get_device_mock.assert_not_called()
+            get_config_mock.assert_not_called()
+            create_token_mock.assert_not_called()
+
 #    @patch('flask_jwt_extended.create_access_token')
 #    @patch('storage.devices.Devices.get')
 #    @patch('storage.configs.Configs.get')
