@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from run import create_app
 
+
 class LoginEndpointTest(TestCase):
 
     '''
