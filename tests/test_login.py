@@ -23,10 +23,9 @@ class LoginEndpointTest(TestCase):
 
         with app.test_client() as cli:
             request = { 'user': 'fake_user', 'password': 'fake_pass' }
-            token = 'fake-token'
-            expected_msg = { 'token': token }
+            expected_msg = { 'token': 'fake-token' }
 
-            create_token_mock.return_value = token
+            create_token_mock.return_value = expected_msg['token']
 
             ret = cli.post('/login/', json=request)
 
