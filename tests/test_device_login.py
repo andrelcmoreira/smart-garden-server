@@ -18,7 +18,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_valid_data(self, init_db_mock, get_config_mock, \
+    def test_device_login_with_valid_data(self, _, get_config_mock, \
                                           get_device_mock, create_token_mock):
         '''
         TODO
@@ -26,13 +26,10 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = '2i74qzhd'
-            serial = 'fakeserial'
-            body = { "id": dev_id, "serial-number": serial }
+            cfg = Config(id='id', interval='10', group='group')
+            dev = Device(id='id', serial='serial', model='model', desc='desc')
             token = 'fake-token'
-            cfg = Config(id=dev_id, interval="10", group="fake-group")
-            dev = Device(serial=serial, model="fake-model", id=dev_id,
-                         desc='fake-desc')
+            request = { 'id': dev.id, 'serial-number': dev.serial }
             expected_msg = {
                 'config': cfg.__dict__,
                 'msg': 'Device authenticated with success',
@@ -43,20 +40,21 @@ class DeviceLoginEndpointTest(TestCase):
             get_config_mock.return_value = cfg
             create_token_mock.return_value = token
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 200)
 
-            get_device_mock.assert_called_once_with(dev_id)
-            get_config_mock.assert_called_once_with(dev_id)
-            create_token_mock.assert_called_once_with(identity=(dev_id, serial))
+            get_device_mock.assert_called_once_with(dev.id)
+            get_config_mock.assert_called_once_with(dev.id)
+            create_token_mock.assert_called_once_with(
+                identity=(dev.id, dev.serial))
 
     @patch('flask_jwt_extended.create_access_token')
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_invalid_id(self, init_db_mock, get_config_mock, \
+    def test_device_login_with_invalid_id(self, _, get_config_mock, \
                                           get_device_mock, create_token_mock):
         '''
         TODO
@@ -64,12 +62,10 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = 'bad-id'
-            serial = 'fakeserial'
-            body = { "id": dev_id, "serial-number": serial }
+            request = { 'id': 'bad-id', 'serial-number': 'fakeserial' }
             expected_msg = { 'msg': 'Bad request' }
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 400)
@@ -82,8 +78,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_invalid_serial(self, init_db_mock, \
-                                              get_config_mock, \
+    def test_device_login_with_invalid_serial(self, _, get_config_mock, \
                                               get_device_mock, \
                                               create_token_mock):
         '''
@@ -92,12 +87,10 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = '2i74qzhd'
-            serial = '!@#%R'
-            body = { "id": dev_id, "serial-number": serial }
+            request = { 'id': '2i74qzhd', 'serial-number': '!@#%R' }
             expected_msg = { 'msg': 'Bad request' }
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 400)
@@ -110,7 +103,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_missing_id(self, init_db_mock, get_config_mock, \
+    def test_device_login_with_missing_id(self, _, get_config_mock, \
                                           get_device_mock, create_token_mock):
         '''
         TODO
@@ -118,11 +111,10 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            serial = 'fake-serial'
-            body = { "serial-number": serial }
+            request = { "serial-number": 'fake-serial' }
             expected_msg = { 'msg': 'Missing required data' }
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 400)
@@ -135,8 +127,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_missing_serial(self, init_db_mock, \
-                                              get_config_mock, \
+    def test_device_login_with_missing_serial(self, _, get_config_mock, \
                                               get_device_mock, \
                                               create_token_mock):
         '''
@@ -145,11 +136,10 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = 'fakeid'
-            body = { 'id': dev_id }
+            request = { 'id': 'fakeid' }
             expected_msg = { 'msg': 'Missing required data' }
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 400)
@@ -162,8 +152,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_not_existent_device(self, init_db_mock, \
-                                                   get_config_mock, \
+    def test_device_login_with_not_existent_device(self, _, get_config_mock, \
                                                    get_device_mock, \
                                                    create_token_mock):
         '''
@@ -172,19 +161,17 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = '2i74qzhd'
-            serial = 'fakeserial'
-            body = { "id": dev_id, "serial-number": serial }
-            expected_msg = { "msg": "The device isn't registered on database" }
+            request = { 'id': '2i74qzhd', 'serial-number': 'fakeserial' }
+            expected_msg = { 'msg': "The device isn't registered on database" }
 
-            get_device_mock.return_value = {}
+            get_device_mock.return_value = None
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 404)
 
-            get_device_mock.assert_called_once_with(dev_id)
+            get_device_mock.assert_called_once_with(request['id'])
             get_config_mock.assert_not_called()
             create_token_mock.assert_not_called()
 
@@ -192,8 +179,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_wrong_serial(self, init_db_mock, \
-                                            get_config_mock, \
+    def test_device_login_with_wrong_serial(self, _, get_config_mock, \
                                             get_device_mock, create_token_mock):
         '''
         TODO
@@ -201,21 +187,19 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = '2i74qzhd'
-            serial = 'fakeserial'
-            body = { "id": dev_id, "serial-number": serial }
-            dev = Device(serial='wrong-serial', model="fake-model", id=dev_id,
-                         desc='fake-desc')
+            dev = Device(serial='wrong-serial', model='fake-model',
+                         id='2i74qzhd', desc='fake-desc')
+            request = { 'id': dev.id, 'serial-number': 'good-serial' }
             expected_msg = { 'msg': 'Authentication failed' }
 
             get_device_mock.return_value = dev
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 401)
 
-            get_device_mock.assert_called_once_with(dev_id)
+            get_device_mock.assert_called_once_with(dev.id)
             get_config_mock.assert_not_called()
             create_token_mock.assert_not_called()
 
@@ -223,8 +207,7 @@ class DeviceLoginEndpointTest(TestCase):
     @patch('models.device_handler.DeviceHandler.get')
     @patch('models.config_handler.ConfigHandler.get')
     @patch('models.database_mgr.DatabaseMgr.init_db')
-    def test_device_login_with_not_existent_config(self, init_db_mock, \
-                                                   get_config_mock, \
+    def test_device_login_with_not_existent_config(self, _, get_config_mock, \
                                                    get_device_mock, \
                                                    create_token_mock):
         '''
@@ -233,25 +216,23 @@ class DeviceLoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            dev_id = '2i74qzhd'
-            serial = 'fakeserial'
-            body = { "id": dev_id, "serial-number": serial }
-            dev = Device(serial=serial, model="fake-model", id=dev_id,
+            dev = Device(serial='fakeserial', model="fake-model", id='2i74qzhd',
                          desc='fake-desc')
+            request = { "id": dev.id, "serial-number": dev.serial }
             expected_msg = {
                 'msg': "There's no config for the specific device"
             }
 
-            get_config_mock.return_value = None
             get_device_mock.return_value = dev
+            get_config_mock.return_value = None
 
-            ret = cli.post('/devices/login/', json=body)
+            ret = cli.post('/devices/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 404)
 
-            get_device_mock.assert_called_once_with(dev_id)
-            get_config_mock.assert_called_once_with(dev_id)
+            get_device_mock.assert_called_once_with(dev.id)
+            get_config_mock.assert_called_once_with(dev.id)
             create_token_mock.assert_not_called()
 
 

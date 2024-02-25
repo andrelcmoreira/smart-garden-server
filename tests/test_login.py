@@ -11,35 +11,34 @@ class LoginEndpointTest(TestCase):
 
     '''
 
-    @patch('mysql.connector.connect')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
     @patch('flask_jwt_extended.create_access_token')
-    def test_login_with_valid_credentials(self, create_token_mock, db_mock):
+    def test_login_with_valid_credentials(self, create_token_mock, _):
         '''
         GIVEN we have valid credentials
         WHEN  we try to authenticate within the server
-        THEN  a token must be returned
+        THEN  a token must be generated and returned
         '''
         app = create_app()
 
         with app.test_client() as cli:
-            body = { 'user': 'fake_user', 'password': 'fake_pass' }
+            request = { 'user': 'fake_user', 'password': 'fake_pass' }
             token = 'fake-token'
             expected_msg = { 'token': token }
 
             create_token_mock.return_value = token
 
-            ret = cli.post('/login/', json=body)
+            ret = cli.post('/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 200)
 
             create_token_mock.assert_called_once_with(
-                identity=(body['user'], body['password'])
-            )
+                identity=(request['user'], request['password']))
 
-    @patch('mysql.connector.connect')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
     @patch('flask_jwt_extended.create_access_token')
-    def test_login_with_no_user(self, create_token_mock, db_mock):
+    def test_login_with_no_user(self, create_token_mock, _):
         '''
         GIVEN we have no valid user
         WHEN  we try to authenticate within the server
@@ -48,19 +47,19 @@ class LoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            body = { 'password': 'fake_admin' }
+            request = { 'password': 'fake_admin' }
             expected_msg = { 'msg': 'Missing required data' }
 
-            ret = cli.post('/login/', json=body)
+            ret = cli.post('/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 400)
 
             create_token_mock.assert_not_called()
 
-    @patch('mysql.connector.connect')
+    @patch('models.database_mgr.DatabaseMgr.init_db')
     @patch('flask_jwt_extended.create_access_token')
-    def test_login_with_no_password(self, create_token_mock, db_mock):
+    def test_login_with_no_password(self, create_token_mock, _):
         '''
         GIVEN we have no valid password
         WHEN  we try to authenticate within the server
@@ -69,15 +68,16 @@ class LoginEndpointTest(TestCase):
         app = create_app()
 
         with app.test_client() as cli:
-            body = { 'user': 'fake_admin' }
+            request = { 'user': 'fake_admin' }
             expected_msg = { 'msg': 'Missing required data' }
 
-            ret = cli.post('/login/', json=body)
+            ret = cli.post('/login/', json=request)
 
             self.assertEqual(ret.json, expected_msg)
             self.assertEqual(ret.status_code, 400)
 
             create_token_mock.assert_not_called()
+
 
 if __name__ == '__main__':
     main()

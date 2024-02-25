@@ -2,6 +2,7 @@ from unittest import main, TestCase
 
 from app.validators import validate_field
 
+
 class ValidatorsTest(TestCase):
 
     '''

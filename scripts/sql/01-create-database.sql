@@ -1,1 +1,1 @@
-create database smart_garden;
+CREATE database smart_garden;
