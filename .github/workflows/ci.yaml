@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  MINIMUM_COVERAGE: 74
+
 jobs:
   check_compose_file:
     runs-on: ubuntu-latest
@@ -27,3 +30,20 @@ jobs:
 
       - name: Run unit tests
         run: nose2 -c tests/nose.cfg
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # TODO: remove this
+      - name: Install dependencies
+        run: |
+          pip3 install -r requirements.txt
+          pip3 install -r tests/requirements.txt
+
+      - name: Run unit tests
+        run: nose2 -c tests/nose.cfg
+
+      - name: Check coverage
+        run: coverage report --fail-under ${{ env.MINIMUM_COVERAGE }}
