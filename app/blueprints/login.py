@@ -5,7 +5,9 @@ import flask_jwt_extended
 
 from validators import validate_request
 
+
 login_bp = Blueprint('login', __name__, url_prefix='/login')
+
 
 @login_bp.route('/', methods=['POST'])
 def login():

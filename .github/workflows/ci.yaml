@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check_compose_file:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check docker-compose file
+        run: docker-compose --env-file .env.dbg up --dry-run
