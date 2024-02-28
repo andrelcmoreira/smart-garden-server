@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  MINIMUM_COVERAGE: 74
+  MINIMUM_COVERAGE: 75
 
 jobs:
   check_compose_file:
