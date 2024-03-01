@@ -5,7 +5,10 @@ from models.table_handler import TableHandler
 
 class ConfigHandler(TableHandler):
 
-    """Docstring for ConfigHandler. """
+    '''
+    Handler for configs table.
+
+    '''
 
     @staticmethod
     def insert(cfg):
@@ -72,4 +75,5 @@ class ConfigHandler(TableHandler):
             cursor.execute(f'select id from configs where dev_id = {entry_id}')
 
             ret = cursor.fetchone()
+
             return True if ret else False

@@ -4,7 +4,10 @@ from os import getenv
 
 class DatabaseMgr:
 
-    """Docstring for DatabaseMgr. """
+    '''
+    Manager of database connection.
+
+    '''
 
     db = None
 

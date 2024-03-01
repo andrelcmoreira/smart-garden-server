@@ -5,7 +5,10 @@ from models.table_handler import TableHandler
 
 class DeviceHandler(TableHandler):
 
-    """Docstring for DeviceHandler. """
+    '''
+    Handler for devices table.
+
+    '''
 
     @staticmethod
     def insert(entry):
@@ -20,6 +23,7 @@ class DeviceHandler(TableHandler):
 
             # get the device ID
             c.execute('select max(id) from devices') # TODO: improve this
+
             return c.fetchone()
 
     @staticmethod
@@ -77,4 +81,5 @@ class DeviceHandler(TableHandler):
             cursor.execute(f'select id from devices where id = {entry_id}')
 
             ret = cursor.fetchone()
+
             return True if ret else False
