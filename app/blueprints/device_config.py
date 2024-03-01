@@ -15,7 +15,7 @@ device_cfg_bp = Blueprint('device_config', __name__, url_prefix='/devices')
 @jwt_required()
 def config_device(dev_id):
     '''
-    POST /devices/<id>/login endpoint implementation.
+    POST /devices/<id>/config endpoint implementation.
 
     :dev_id: ID of device.
 
