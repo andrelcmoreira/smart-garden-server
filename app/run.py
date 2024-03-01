@@ -8,10 +8,21 @@ from blueprints.device_config import device_cfg_bp
 from blueprints.device_login import device_login_bp
 from blueprints.login import login_bp
 from models.database_mgr import DatabaseMgr
-from error.handlers import *
+from error.handlers import (
+    bad_request,
+    unauthorized_error,
+    resource_not_found,
+    internal_error
+)
 
 
 def create_app():
+    '''
+    Create an application instance;
+
+    :returns: An app instance.
+
+    '''
     app = Flask(__name__)
 
     app.config['JWT_SECRET_KEY'] = getenv('SECRET_KEY')

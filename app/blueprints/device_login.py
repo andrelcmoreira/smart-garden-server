@@ -3,7 +3,6 @@ from flask import current_app as app
 
 import flask_jwt_extended
 
-from models.entities.config import Config
 from models.device_handler import DeviceHandler
 from models.config_handler import ConfigHandler
 from validators import validate_request

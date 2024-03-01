@@ -1,57 +1,59 @@
 from re import search
 
+
 __VALIDATORS = [
     {
         'field': 'user',
         'required': True,
-        'pattern': '^\w+$'
+        'pattern': r'^\w+$'
     },
     {
         'field': 'password',
         'required': True,
-        'pattern': '^[\w@#\$&\*\-!\?;:]+$'
+        'pattern': r'^[\w@#\$&\*\-!\?;:]+$'
     },
     {
         'field': 'serial-number',
         'required': True,
-        'pattern': '^[\w\-]+$'
+        'pattern': r'^[\w\-]+$'
     },
     {
         'field': 'model',
         'required': True,
-        'pattern': '^[\w\-]+$'
+        'pattern': r'^[\w\-]+$'
     },
     {
         'field': 'id',
         'required': True,
-        'pattern': '^[a-z\d]+$'
+        'pattern': r'^[a-z\d]+$'
     },
     {
         'field': 'description',
         'required': False,
-        'pattern': '^[a-zA-Z\d ]+$'
+        'pattern': r'^[a-zA-Z\d ]+$'
     },
     {
         'field': 'group',
         'required': False,
-        'pattern': '^[a-zA-Z\d ]+$'
+        'pattern': r'^[a-zA-Z\d ]+$'
     },
     {
         'field': 'param',
         'required': True,
-        'pattern': '^[a-z_\-]+$'
+        'pattern': r'^[a-z_\-]+$'
     },
     {
         'field': 'value',
         'required': True,
-        'pattern': '^[\w@#\$&\*\-!\?;:]+$'
+        'pattern': r'^[\w@#\$&\*\-!\?;:]+$'
     },
     {
         'field': 'interval',
         'required': True,
-        'pattern': '^\d+$'
+        'pattern': r'^\d+$'
     }
 ]
+
 
 def __get_validator(field):
     """

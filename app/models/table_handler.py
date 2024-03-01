@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 
 
-class TableHandler:
+class TableHandler(ABC):
 
     '''
     Define a base sql table handler.
 
     '''
 
+    @staticmethod
     @abstractmethod
     def insert(entry):
         '''
@@ -16,8 +17,8 @@ class TableHandler:
         :entry: Entry data.
 
         '''
-        pass
 
+    @staticmethod
     @abstractmethod
     def delete(entry_id):
         '''
@@ -26,7 +27,6 @@ class TableHandler:
         :entry_id: Record ID.
 
         '''
-        pass
 
     @staticmethod
     @abstractmethod
@@ -39,7 +39,6 @@ class TableHandler:
         :value: New value to replace the old one.
 
         '''
-        pass
 
     @staticmethod
     @abstractmethod
@@ -50,7 +49,6 @@ class TableHandler:
         :returns: All the table entries.
 
         '''
-        pass
 
     @staticmethod
     @abstractmethod
@@ -62,7 +60,6 @@ class TableHandler:
         :returns: The entry data.
 
         '''
-        pass
 
     @staticmethod
     @abstractmethod
@@ -74,4 +71,3 @@ class TableHandler:
         :returns: True if it exist; otherwise False.
 
         '''
-        pass

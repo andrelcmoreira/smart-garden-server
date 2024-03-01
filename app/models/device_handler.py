@@ -82,4 +82,4 @@ class DeviceHandler(TableHandler):
 
             ret = cursor.fetchone()
 
-            return True if ret else False
+            return bool(ret)

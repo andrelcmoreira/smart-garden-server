@@ -11,13 +11,13 @@ class ConfigHandler(TableHandler):
     '''
 
     @staticmethod
-    def insert(cfg):
+    def insert(entry):
         db = DatabaseMgr.get_db()
 
         with db.cursor() as cursor:
             cursor.execute(f'''
                 insert into configs(dev_id, dev_group, dev_interval)
-                values ("{cfg.id}", "{cfg.group}", "{cfg.interval}")''')
+                values ("{entry.id}", "{entry.group}", "{entry.interval}")''')
             db.commit()
 
     @staticmethod
@@ -76,4 +76,4 @@ class ConfigHandler(TableHandler):
 
             ret = cursor.fetchone()
 
-            return True if ret else False
+            return bool(ret)

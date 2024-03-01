@@ -1,5 +1,5 @@
-from mysql import connector
 from os import getenv
+from mysql import connector
 
 
 class DatabaseMgr:
