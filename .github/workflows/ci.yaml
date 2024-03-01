@@ -17,6 +17,18 @@ jobs:
       - name: Check docker-compose file
         run: docker-compose --env-file .env.dbg up --dry-run
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # TODO: remove this
+      - name: Install dependencies
+        run: pip3 install pylint
+
+      - name: Lint the code
+        run: pylint app/*
+
   unit_tests:
     runs-on: ubuntu-latest
     steps:

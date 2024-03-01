@@ -7,3 +7,4 @@
 - improve documentation
 - robot tests
 - security issues
+- migrate the unit tests to pytest
