@@ -11,6 +11,7 @@ env:
 
 jobs:
   check_compose_file:
+    name: Check docker-compose syntax
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,6 +20,7 @@ jobs:
         run: docker-compose --env-file .env.dbg up --dry-run
 
   lint:
+    name: Lint the code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,10 +32,11 @@ jobs:
           pip3 install -r tests/requirements.txt
           pip3 install pylint
 
-      - name: Lint the code
+      - name: Run pylint
         run: pylint app/* --fail-under ${{ env.PYLINT_MINIMUM_RATE }}
 
   unit_tests:
+    name: Run unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -44,10 +47,11 @@ jobs:
           pip3 install -r requirements.txt
           pip3 install -r tests/requirements.txt
 
-      - name: Run unit tests
+      - name: Run tests
         run: nose2 -c tests/nose.cfg
 
   coverage:
+    name: Check test coverage
     runs-on: ubuntu-latest
     needs: unit_tests
     steps:
@@ -59,7 +63,7 @@ jobs:
           pip3 install -r requirements.txt
           pip3 install -r tests/requirements.txt
 
-      - name: Run unit tests
+      - name: Run tests
         run: nose2 -c tests/nose.cfg
 
       - name: Check coverage
