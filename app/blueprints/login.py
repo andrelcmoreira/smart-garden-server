@@ -1,8 +1,10 @@
 from flask import abort, jsonify, request, Blueprint
 from flask import current_app as app
+from hashlib import sha256
 
 import flask_jwt_extended
 
+from models.user_handler import UserHandler
 from validators import validate_request
 
 
@@ -30,6 +32,11 @@ def login():
     except KeyError as key:
         app.logger.debug(f'missing {key} in request')
         abort(400, 'Missing required data')
+
+    ret = UserHandler.get(user)
+    if not ret or (ret.passwd != sha256(passwd.encode('utf-8')).hexdigest()):
+        app.logger.debug(f'invalid login credentials "{user}, {passwd}"')
+        abort(401, 'Bad credentials!')
 
     token = flask_jwt_extended.create_access_token(identity=(user, passwd))
 
